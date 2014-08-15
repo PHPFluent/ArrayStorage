@@ -1,0 +1,22 @@
+{
+    "name": "phpfluent/arraystorage",
+    "type": "library",
+    "homepage": "http://github.com/PHPFluent/ArrayStorage",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Henrique Moody",
+            "email": "henriquemoody@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "PHPFluent\\ArrayStorage\\": ["src", "tests"]
+        }
+    },
+    "require-dev": {
+        "phpmd/phpmd" : "~1.5",
+        "phpunit/phpunit": "~4.1",
+        "squizlabs/php_codesniffer": "~1.5"
+    }
+}
