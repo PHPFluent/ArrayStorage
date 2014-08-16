@@ -25,7 +25,7 @@ class Collection implements Countable, IteratorAggregate
         return $this->name;
     }
 
-    public function record($record)
+    public function record($record = array())
     {
         if (! $record instanceof Record) {
             $data = (array) $record;

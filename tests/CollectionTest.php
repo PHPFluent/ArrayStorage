@@ -15,6 +15,14 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($name, $collection->getName());
     }
 
+    public function testShouldCreateNewRecord()
+    {
+        $collection = new Collection('whatever');
+        $record = $collection->record();
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+    }
+
     public function testShouldCreateNewRecordFromArray()
     {
         $collection = new Collection('whatever');

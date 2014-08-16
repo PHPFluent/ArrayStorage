@@ -56,7 +56,7 @@ You can create a Record object from Storage object:
 
 ```php
 $storage = new Storage();
-$record = $storage->record();
+$record = $storage->record(); // You also can provide default data, like an array or stdClass
 $record->name = 'Henrique Moody';
 
 $storage->users->insert($record);
