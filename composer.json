@@ -11,12 +11,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "PHPFluent\\ArrayStorage\\": ["src", "tests"]
+            "PHPFluent\\ArrayStorage\\": "src"
         }
     },
     "require-dev": {
-        "phpmd/phpmd" : "~1.5",
-        "phpunit/phpunit": "~4.1",
+        "phpmd/phpmd": "~2.0",
+        "phpunit/phpunit": "~4.2",
         "squizlabs/php_codesniffer": "~1.5"
     }
 }
