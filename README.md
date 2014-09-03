@@ -122,7 +122,8 @@ $criteria->foo->equalTo(2)
          ->corge->between(array(1, 42))
          ->grault->lessThan(1000)
          ->garply->greaterThan(0)
-         ->waldo->notEqualTo(false);
+         ->waldo->notEqualTo(false)
+         ->fred->greaterThanOrEqualTo(13);
 
 $storage->users->find($criteria);
 ```

@@ -69,6 +69,13 @@ class Criteria implements Countable, Filter
         if (0 === strpos($methodName, 'not')) {
             $shortName = substr($methodName, 3);
             $filter = new Not($this->newFilterInstance($shortName, $arguments));
+        } elseif (false !== strpos($methodName, 'Or')) {
+            $pieces = explode('Or', $methodName);
+            $filters = array();
+            foreach ($pieces as $shortName) {
+                $filters[] = $this->newFilterInstance($shortName, $arguments);
+            }
+            $filter = new OneOf($filters);
         } else {
             $filter = $this->newFilterInstance($methodName, $arguments);
         }

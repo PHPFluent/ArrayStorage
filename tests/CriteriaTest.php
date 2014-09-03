@@ -120,4 +120,15 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($criteria->isValid($record));
     }
+
+    public function testShouldUseOneOfFilterWhenUsingTheWordOrInTheFilterName()
+    {
+        $criteria = new Criteria();
+        $criteria->foo->greaterThanOrEqualTo(42);
+
+        $record = new Record();
+        $record->foo = 42;
+
+        $this->assertTrue($criteria->isValid($record));
+    }
 }
