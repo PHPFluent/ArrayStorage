@@ -116,7 +116,8 @@ $storage->users->find(array('name' => 'Henrique Moody')); // Return an Record ob
 $criteria = $storage->users->criteria();
 $criteria->foo->equalTo(2)
          ->bar->in(array(1, 2, 3))
-         ->baz->regex('/^[0-9]{3}$/');
+         ->baz->regex('/^[0-9]{3}$/')
+         ->qux->like('This _s spart%');
 
 $storage->users->find($criteria);
 ```
