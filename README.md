@@ -120,7 +120,8 @@ $criteria->foo->equalTo(2)
          ->qux->like('This _s spart%')
          ->quux->iLike('tHiS _S sPaRt%')
          ->corge->between(array(1, 42))
-         ->grault->lessThan(1000);
+         ->grault->lessThan(1000)
+         ->garply->greaterThan(0);
 
 $storage->users->find($criteria);
 ```
