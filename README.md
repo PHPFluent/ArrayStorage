@@ -114,7 +114,8 @@ $storage->users->find(array('name' => 'Henrique Moody')); // Return an Record ob
 
 ```php
 $criteria = $storage->users->criteria();
-$criteria->foo->equalTo(2);
+$criteria->foo->equalTo(2)
+         ->bar->in(array(1, 2, 3));
 
 $storage->users->find($criteria);
 ```
