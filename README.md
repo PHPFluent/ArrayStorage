@@ -117,7 +117,8 @@ $criteria = $storage->users->criteria();
 $criteria->foo->equalTo(2)
          ->bar->in(array(1, 2, 3))
          ->baz->regex('/^[0-9]{3}$/')
-         ->qux->like('This _s spart%');
+         ->qux->like('This _s spart%')
+         ->quux->iLike('tHiS _S sPaRt%');
 
 $storage->users->find($criteria);
 ```
