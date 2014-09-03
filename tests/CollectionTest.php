@@ -23,6 +23,14 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
     }
 
+    public function testShouldCreateNewCriteria()
+    {
+        $collection = new Collection('whatever');
+        $criteria = $collection->criteria();
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Criteria', $criteria);
+    }
+
     public function testShouldCreateNewRecordFromArray()
     {
         $collection = new Collection('whatever');
@@ -114,10 +122,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldReturnACollectionWithANameBasedOnCriteriaWhenFindingRecords()
     {
-        $collection = new Collection('whatever');
+        $expectedName = 'whatever';
+        $collection = new Collection($expectedName);
         $criteria = array('foo' => true, 'bar' => 2, 'baz' => 'B');
         $result = $collection->findAll($criteria);
-        $expectedName = 'whatever-{"foo":true,"bar":2,"baz":"B"}';
 
         $this->assertEquals($expectedName, $result->getName());
     }

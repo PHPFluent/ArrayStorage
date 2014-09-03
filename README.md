@@ -109,3 +109,12 @@ $storage->users->findAll(array('name' => 'Henrique Moody')); // Return an Collec
 ```php
 $storage->users->find(array('name' => 'Henrique Moody')); // Return an Record object with the first matched result (if any) or NULL
 ```
+
+## Using Criteria object
+
+```php
+$criteria = $storage->users->criteria();
+$criteria->foo->equalTo(2);
+
+$storage->users->find($criteria);
+```

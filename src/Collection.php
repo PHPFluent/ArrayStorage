@@ -25,7 +25,7 @@ class Collection implements Countable, IteratorAggregate
         return $this->name;
     }
 
-    public function record($record = array())
+    public function record($record = null)
     {
         if (! $record instanceof Record) {
             $data = (array) $record;
@@ -33,6 +33,16 @@ class Collection implements Countable, IteratorAggregate
         }
 
         return $record;
+    }
+
+    public function criteria($criteria = null)
+    {
+        if (! $criteria instanceof Criteria) {
+            $filters = (array) $criteria;
+            $criteria = new Criteria($filters);
+        }
+
+        return $criteria;
     }
 
     public function count()
@@ -52,7 +62,7 @@ class Collection implements Countable, IteratorAggregate
         return $record->id;
     }
 
-    public function update(array $update, array $criteria = array())
+    public function update(array $update, $criteria = null)
     {
         $records = $this->findAll($criteria);
         foreach ($records as $record) {
@@ -60,10 +70,11 @@ class Collection implements Countable, IteratorAggregate
         }
     }
 
-    public function delete(array $criteria = array())
+    public function delete($criteria = null)
     {
+        $criteria = $this->criteria($criteria);
         foreach ($this->records as $key => $record) {
-            if (! $this->equals($criteria, $record)) {
+            if (! $criteria->isValid($record)) {
                 continue;
             }
 
@@ -76,29 +87,17 @@ class Collection implements Countable, IteratorAggregate
         return new ArrayIterator($this->records);
     }
 
-    protected function equals(array $values, Record $record)
-    {
-        foreach ($values as $key => $value) {
-            if ((string) $record->__get($key) == (string) $value) {
-                continue;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public function findAll(array $criteria = array(), $limit = null)
+    public function findAll($criteria = null, $limit = null)
     {
         $count = 0;
         $results = array();
+        $criteria = $this->criteria($criteria);
         foreach ($this->records as $record) {
             if (null !== $limit && $count == $limit) {
                 continue;
             }
 
-            if (! $this->equals($criteria, $record)) {
+            if (! $criteria->isValid($record)) {
                 continue;
             }
 
@@ -106,12 +105,10 @@ class Collection implements Countable, IteratorAggregate
             $results[] = $record;
         }
 
-        $name = $this->name . '-' . json_encode($criteria);
-
-        return new static($name, $results);
+        return new static($this->name, $results);
     }
 
-    public function find(array $criteria = array())
+    public function find($criteria = null)
     {
         $records = $this->findAll($criteria, 1);
 
