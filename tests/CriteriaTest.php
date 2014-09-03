@@ -109,4 +109,15 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
         $this->assertFalse($criteria->isValid($record));
     }
+
+    public function testShouldUseNotFilterWhenUsingTheWordNotInTheFilterName()
+    {
+        $criteria = new Criteria();
+        $criteria->foo->notEqualTo(42);
+
+        $record = new Record();
+        $record->foo = 42;
+
+        $this->assertFalse($criteria->isValid($record));
+    }
 }

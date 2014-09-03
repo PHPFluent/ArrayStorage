@@ -6,6 +6,8 @@ use BadMethodCallException;
 use Countable;
 use PHPFluent\ArrayStorage\Filter\EqualTo;
 use PHPFluent\ArrayStorage\Filter\Filter;
+use PHPFluent\ArrayStorage\Filter\Not;
+use PHPFluent\ArrayStorage\Filter\OneOf;
 use ReflectionClass;
 use UnexpectedValueException;
 
@@ -48,21 +50,30 @@ class Criteria implements Countable, Filter
         return $this;
     }
 
+    protected function newFilterInstance($shortName, array $arguments = array())
+    {
+        $reflection = new ReflectionClass('PHPFluent\\ArrayStorage\\Filter\\' . ucfirst($shortName));
+        if (! $reflection->isSubclassOf('PHPFluent\\ArrayStorage\\Filter\\Filter')) {
+            throw new BadMethodCallException(sprintf('"%s" is not a valid filter name', $shortName));
+        }
+
+        return $reflection->newInstanceArgs($arguments);
+    }
+
     public function __call($methodName, array $arguments = array())
     {
         if (null === $this->currentIndex) {
             throw new UnexpectedValueException('You first need to call a property for this filter');
         }
 
-        $reflection = new ReflectionClass('PHPFluent\\ArrayStorage\\Filter\\' . ucfirst($methodName));
-        if (! $reflection->isSubclassOf('PHPFluent\\ArrayStorage\\Filter\\Filter')) {
-            throw new BadMethodCallException(sprintf('"%s" is not a valid filter name', $methodName));
+        if (0 === strpos($methodName, 'not')) {
+            $shortName = substr($methodName, 3);
+            $filter = new Not($this->newFilterInstance($shortName, $arguments));
+        } else {
+            $filter = $this->newFilterInstance($methodName, $arguments);
         }
 
-        $index = $this->currentIndex;
-        $filter = $reflection->newInstanceArgs($arguments);
-
-        $this->addFilter($index, $filter);
+        $this->addFilter($this->currentIndex, $filter);
 
         return $this;
     }
