@@ -7,9 +7,17 @@ namespace PHPFluent\ArrayStorage;
  */
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
+    public function testShouldAcceptAnInstanceOfFactoryOnConstructor()
+    {
+        $factory = new Factory();
+        $collection = new Collection($factory);
+
+        $this->assertAttributeSame($factory, 'factory', $collection);
+    }
+
     public function testShouldCreateNewRecord()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $record = $collection->record();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
@@ -17,7 +25,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldCreateNewCriteria()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $criteria = $collection->criteria();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\\Criteria', $criteria);
@@ -25,7 +33,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldCreateNewRecordFromArray()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $data = array();
         $record = $collection->record($data);
 
@@ -34,7 +42,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldCreateNewRecordFromStdClass()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $data = new \stdClass();
         $record = $collection->record($data);
 
@@ -43,7 +51,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldReturnTheSameInstanceWhenDataIsAlreadyARecordInstance()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $data = new Record();
         $record = $collection->record($data);
 
@@ -52,14 +60,14 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldCountRecordsInCollection()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
 
         $this->assertCount(0, $collection);
     }
 
     public function testShouldInsertRecordToCollection()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $record = new Record(array('id' => 1, 'name' => 'Jéssica Santana'));
         $collection->insert($record);
 
@@ -68,7 +76,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldInsertRecordToCollectionAndCreateIdWhenRecordDoesNotHaveOne()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $record1 = new Record();
         $record2 = new Record();
         $collection->insert($record1);
@@ -79,7 +87,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldIterateOverRecords()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert(new Record());
         $collection->insert(new Record());
         $collection->insert(new Record());
@@ -93,15 +101,25 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldReturnAnInstanceOfCollectionWhenFindingRecords()
     {
-        $collection = new Collection();
-        $result = $collection->findAll();
+        $factory = $this
+            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Collection', $result);
+        $result = new Collection($factory);
+        $factory
+            ->expects($this->once())
+            ->method('collection')
+            ->will($this->returnValue($result));
+
+        $collection = new Collection($factory);
+
+        $this->assertSame($collection->findAll(), $result);
     }
 
     public function testShouldReturnRecordsAccordingToCriteriaWhenFindingRecords()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert(array('name' => 'A'));
         $collection->insert(array('name' => 'B'));
         $collection->insert(array('name' => 'A'));
@@ -115,7 +133,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldReturnRecordsAccordingToCriteriaAndLimitWhenFindingRecords()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert(array('name' => 'A'));
         $collection->insert(array('name' => 'B'));
         $collection->insert(array('name' => 'A'));
@@ -131,7 +149,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $record1 = new Record(array('name' => 'A'));
         $record2 = new Record(array('name' => 'B'));
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
         $criteria = array('name' => 'B');
@@ -144,7 +162,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $record1 = new Record(array('name' => 'A'));
         $record2 = new Record(array('name' => 'B'));
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
         $update = array('name' => 'C');
@@ -161,7 +179,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $record1 = new Record(array('name' => 'A'));
         $record2 = new Record(array('name' => 'A'));
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
         $update = array('name' => 'C');
@@ -179,7 +197,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $record1 = new Record(array('name' => 'A'));
         $record2 = new Record(array('name' => 'B'));
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
         $collection->delete();
@@ -189,7 +207,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldDeleteRecordsAccordingToCriteria()
     {
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert(array('name' => 'A'));
         $collection->insert(array('name' => 'B'));
         $collection->insert(array('name' => 'C'));
@@ -203,7 +221,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $record1 = new Record(array('name' => 'A', 'child' => new Record(array('id' => 13))));
         $record2 = new Record(array('name' => 'B', 'child' => new Record(array('id' => 42))));
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
         $expectedArray = array(
@@ -218,7 +236,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     {
         $record1 = new Record(array('name' => 'A', 'child' => new Record(array('id' => 13))));
         $record2 = new Record(array('name' => 'B', 'child' => new Record(array('id' => 42))));
-        $collection = new Collection();
+        $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
         $expectedArray = array(

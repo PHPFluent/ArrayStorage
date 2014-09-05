@@ -8,8 +8,14 @@ use Countable;
 
 class Collection implements Countable, IteratorAggregate
 {
+    protected $factory;
     protected $records = array();
     protected $lastRecordId = 0;
+
+    public function __construct(Factory $factory)
+    {
+        $this->factory = $factory;
+    }
 
     public function record($record = null)
     {
@@ -77,7 +83,7 @@ class Collection implements Countable, IteratorAggregate
     {
         $count = 0;
         $criteria = $this->criteria($criteria);
-        $collection = new static();
+        $collection = $this->factory->collection();
         foreach ($this->records as $record) {
             if (null !== $limit && $count == $limit) {
                 continue;
