@@ -11,6 +11,25 @@ use ReflectionClass;
 
 class Factory
 {
+    protected $operatorsToFilters = array(
+        '=' => 'equalTo',
+        '!=' => 'notEqualTo',
+        '<' => 'lessThan',
+        '<=' => 'lessThanOrEqualTo',
+        '>' => 'greaterThan',
+        '>=' => 'greaterThanOrEqualTo',
+        'BETWEEN' => 'between',
+        'NOT BETWEEN' => 'notBetween',
+        'ILIKE' => 'iLike',
+        'NOT ILIKE' => 'notILike',
+        'IN' => 'in',
+        'NOT IN' => 'notIn',
+        'LIKE' => 'like',
+        'NOT LIKE' => 'notLike',
+        'REGEX' => 'regex',
+        'NOT REGEX' => 'notRegex',
+    );
+
     public function collection($collection = null)
     {
         if (! $collection instanceof Collection) {
@@ -41,7 +60,14 @@ class Factory
                     continue;
                 }
 
-                $criteria->addFilter($key, new EqualTo($value));
+                $index = strstr($key, ' ', true) ?: $key;
+                $operator = trim(strstr($key, ' ') ?: '=');
+                if (false === strpos($operator, 'BETWEEN')) {
+                    $value = array($value);
+                }
+                $filter = $this->filter($operator, $value);
+
+                $criteria->addFilter($index, $filter);
             }
         }
 
@@ -51,6 +77,11 @@ class Factory
     public function filter($filter, array $arguments = array())
     {
         if (! $filter instanceof Filter) {
+
+            if (isset($this->operatorsToFilters[$filter])) {
+                return $this->filter($this->operatorsToFilters[$filter], $arguments);
+            }
+
             if (0 === strpos($filter, 'not')) {
                 $filterName = substr($filter, 3);
                 $filter = $this->filter($filterName, $arguments);

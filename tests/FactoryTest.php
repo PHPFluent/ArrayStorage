@@ -98,6 +98,43 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedFilter, $actualFilters[0][1]);
     }
 
+    public function operatorsProvider()
+    {
+        return array(
+            array('=', 42, new Filter\EqualTo(42)),
+            array('!=', 42, new Filter\Not(new Filter\EqualTo(42))),
+            array('<', 42, new Filter\LessThan(42)),
+            array('<=', 42, new Filter\OneOf(array(new Filter\LessThan(42), new Filter\EqualTo(42)))),
+            array('>', 42, new Filter\GreaterThan(42)),
+            array('>=', 42, new Filter\OneOf(array(new Filter\GreaterThan(42), new Filter\EqualTo(42)))),
+            array('BETWEEN', array(1, 3), new Filter\Between(1, 3)),
+            array('NOT BETWEEN', array(1, 3), new Filter\Not(new Filter\Between(1, 3))),
+            array('ILIKE', 'String%', new Filter\ILike('String%')),
+            array('NOT ILIKE', 'String%', new Filter\Not(new Filter\ILike('String%'))),
+            array('IN', array(1, 2, 3), new Filter\In(array(1, 2, 3))),
+            array('NOT IN', array(1, 2, 3), new Filter\Not(new Filter\In(array(1, 2, 3)))),
+            array('LIKE', 'String%', new Filter\Like('String%')),
+            array('NOT LIKE', 'String%', new Filter\Not(new Filter\Like('String%'))),
+            array('REGEX', '/[a-z]/', new Filter\Regex('/[a-z]/')),
+            array('NOT REGEX', '/[a-z]/', new Filter\Not(new Filter\Regex('/[a-z]/'))),
+        );
+    }
+
+    /**
+     * @dataProvider operatorsProvider
+     */
+    public function testShouldCreateACriteriaFromAKeyValueArrayOfNonFiltersUsingOperator($operator, $value, $expectedFilter)
+    {
+        $inputFilters = array(
+            'name ' . $operator => $value,
+        );
+        $factory = new Factory();
+        $criteria = $factory->criteria($inputFilters);
+        $actualFilters = $criteria->getFilters();
+
+        $this->assertEquals($expectedFilter, $actualFilters[0][1]);
+    }
+
     public function testShouldReturnInputIfInputIsAlreadyAFilter()
     {
         $filter = new Filter\EqualTo(42, 'identical');

@@ -101,13 +101,13 @@ The example above convert all Record objects into an array.
 ## Finding multiple records into a collection
 
 ```php
-$storage->users->findAll(array('name' => 'Henrique Moody')); // Return an Collection object with the partial result (if any)
+$storage->users->findAll(array('status !=' => false)); // Return an Collection object with the partial result (if any)
 ```
 
 ## Finding single record into a collection
 
 ```php
-$storage->users->find(array('name' => 'Henrique Moody')); // Return an Record object with the first matched result (if any) or NULL
+$storage->users->find(array('priority >=' => 4)); // Return an Record object with the first matched result (if any) or NULL
 ```
 
 ## Using Criteria object
