@@ -2,8 +2,12 @@
 
 namespace PHPFluent\ArrayStorage;
 
-use PHPFluent\ArrayStorage\Filter\Filter;
+use InvalidArgumentException;
 use PHPFluent\ArrayStorage\Filter\EqualTo;
+use PHPFluent\ArrayStorage\Filter\Filter;
+use PHPFluent\ArrayStorage\Filter\Not;
+use PHPFluent\ArrayStorage\Filter\OneOf;
+use ReflectionClass;
 
 class Factory
 {
@@ -30,7 +34,7 @@ class Factory
     {
         if (! $criteria instanceof Criteria) {
             $filters = (array) $criteria;
-            $criteria = new Criteria();
+            $criteria = new Criteria($this);
             foreach ($filters as $key => $value) {
                 if ($value instanceof Filter) {
                     $criteria->addFilter($key, $value);
@@ -42,5 +46,36 @@ class Factory
         }
 
         return $criteria;
+    }
+
+    public function filter($filter, array $arguments = array())
+    {
+        if (! $filter instanceof Filter) {
+            if (0 === strpos($filter, 'not')) {
+                $filterName = substr($filter, 3);
+                $filter = $this->filter($filterName, $arguments);
+
+                return new Not($filter);
+            }
+
+            if (false !== strpos($filter, 'Or')) {
+                $filtersNames = explode('Or', $filter);
+                $filters = array();
+                foreach ($filtersNames as $filterName) {
+                    $filters[] = $this->filter($filterName, $arguments);
+                }
+
+                return new OneOf($filters);
+            }
+
+            $reflectionClass = new ReflectionClass(__NAMESPACE__ . '\\Filter\\' . ucfirst($filter));
+            if (! $reflectionClass->isSubclassOf(__NAMESPACE__ . '\\Filter\\Filter')) {
+                throw new InvalidArgumentException(sprintf('"%s" is not a valid filter name', $filter));
+            }
+
+            return $reflectionClass->newInstanceArgs($arguments);
+        }
+
+        return $filter;
     }
 }

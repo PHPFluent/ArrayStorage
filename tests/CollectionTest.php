@@ -45,7 +45,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $filters = array('foo' => $this->getMock('PHPFluent\\ArrayStorage\\Filter\\Filter'));
 
-        $criteria = new Criteria();
+        $criteria = new Criteria($factory);
         $criteria->addFilter('foo', $filters['foo']);
 
         $factory

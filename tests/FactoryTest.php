@@ -2,7 +2,7 @@
 
 namespace PHPFluent\ArrayStorage;
 
-use PHPFluent\ArrayStorage\Filter\EqualTo;
+use PHPFluent\ArrayStorage\Filter;
 
 /**
  * @covers PHPFluent\ArrayStorage\Factory
@@ -92,9 +92,63 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new Factory();
         $criteria = $factory->criteria($inputFilters);
         $actualFilters = $criteria->getFilters();
-        $expectedFilter = new EqualTo($inputFilters['foo']);
+        $expectedFilter = new Filter\EqualTo($inputFilters['foo']);
 
         $this->assertEquals('foo', $actualFilters[0][0]);
         $this->assertEquals($expectedFilter, $actualFilters[0][1]);
+    }
+
+    public function testShouldReturnInputIfInputIsAlreadyAFilter()
+    {
+        $filter = new Filter\EqualTo(42, 'identical');
+
+        $factory = new Factory();
+
+        $this->assertSame($filter, $factory->filter($filter));
+    }
+
+    public function testShouldCreateAFilterByNameAndArguments()
+    {
+        $expectedFilter = new Filter\EqualTo(42, 'identical');
+
+        $factory = new Factory();
+        $actualFilter = $factory->filter('equalTo', array(42, 'identical'));
+
+        $this->assertEquals($expectedFilter, $actualFilter);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage "filter" is not a valid filter name
+     */
+    public function testShouldThrowExceptionWhenCallingMethodDoesNotRefersToAValidFilter()
+    {
+        $factory = new Factory();
+        $factory->filter('filter');
+    }
+
+    public function testShouldUseNotFilterWhenInputHasNotAsPrefix()
+    {
+        $expectedFilter = new Filter\Not(new Filter\EqualTo(42));
+
+        $factory = new Factory();
+        $actualFilter = $factory->filter('notEqualTo', array(42));
+
+        $this->assertEquals($expectedFilter, $actualFilter);
+    }
+
+    public function testShouldUseOneOfFilterWhenInputHasContainsTheWordOr()
+    {
+        $expectedFilter = new Filter\OneOf(
+            array(
+                new Filter\GreaterThan(42),
+                new Filter\EqualTo(42),
+            )
+        );
+
+        $factory = new Factory();
+        $actualFilter = $factory->filter('greaterThanOrEqualTo', array(42));
+
+        $this->assertEquals($expectedFilter, $actualFilter);
     }
 }

@@ -14,7 +14,13 @@ use UnexpectedValueException;
 class Criteria implements Countable, Filter
 {
     protected $currentIndex = null;
+    protected $factory;
     protected $filters = array();
+
+    public function __construct(Factory $factory)
+    {
+        $this->factory = $factory;
+    }
 
     public function getFilters()
     {
@@ -38,35 +44,13 @@ class Criteria implements Countable, Filter
         return $this;
     }
 
-    protected function newFilterInstance($shortName, array $arguments = array())
-    {
-        $reflection = new ReflectionClass('PHPFluent\\ArrayStorage\\Filter\\' . ucfirst($shortName));
-        if (! $reflection->isSubclassOf('PHPFluent\\ArrayStorage\\Filter\\Filter')) {
-            throw new BadMethodCallException(sprintf('"%s" is not a valid filter name', $shortName));
-        }
-
-        return $reflection->newInstanceArgs($arguments);
-    }
-
     public function __call($methodName, array $arguments = array())
     {
         if (null === $this->currentIndex) {
             throw new UnexpectedValueException('You first need to call a property for this filter');
         }
 
-        if (0 === strpos($methodName, 'not')) {
-            $shortName = substr($methodName, 3);
-            $filter = new Not($this->newFilterInstance($shortName, $arguments));
-        } elseif (false !== strpos($methodName, 'Or')) {
-            $pieces = explode('Or', $methodName);
-            $filters = array();
-            foreach ($pieces as $shortName) {
-                $filters[] = $this->newFilterInstance($shortName, $arguments);
-            }
-            $filter = new OneOf($filters);
-        } else {
-            $filter = $this->newFilterInstance($methodName, $arguments);
-        }
+        $filter = $this->factory->filter($methodName, $arguments);
 
         $this->addFilter($this->currentIndex, $filter);
 

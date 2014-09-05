@@ -12,9 +12,15 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
         return $this->getMock('PHPFluent\ArrayStorage\Filter\Filter');
     }
 
+    public function testShouldAcceptFactoryOnConstructor()
+    {
+        $factory = new Factory();
+        $criteria = new Criteria($factory);
+    }
+
     public function testShouldAddFilter()
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria(new Factory());
         $criteria->addFilter('foo', $this->filter());
 
         $this->assertCount(1, $criteria);
@@ -22,14 +28,14 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldReturnSelfWhenGettingANonExistentProperty()
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria(new Factory());
 
         $this->assertSame($criteria, $criteria->foo);
     }
 
-    public function testShouldReturnAddFilterUsingMethodOverload()
+    public function testShouldAddFilterUsingMethodOverload()
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria(new Factory());
         $criteria->foo->equalTo(2);
         $filters = $criteria->getFilters();
         list($index, $filter) = $filters[0];
@@ -38,29 +44,34 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('PHPFluent\\ArrayStorage\\Filter\\EqualTo', $filter);
     }
 
+    public function testShouldUseFactoryToCreateFilters()
+    {
+        $filter = $this->getMock('PHPFluent\\ArrayStorage\\Filter\\Filter');
+
+        $factory = $this->getMock('PHPFluent\\ArrayStorage\\Factory');
+        $factory
+            ->expects($this->once())
+            ->method('filter')
+            ->with('someFilter')
+            ->will($this->returnValue($filter));
+
+        $criteria = new Criteria($factory);
+        $criteria->foo->someFilter(2);
+    }
+
     /**
      * @expectedException UnexpectedValueException
      * @expectedExceptionMessage You first need to call a property for this filter
      */
-    public function testShouldThrowExceptionWhenCallingAMethodBeforeCallAProperty()
+    public function testShouldThrowExceptionWhenCallingAFilterBeforeCallAProperty()
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria(new Factory());
         $criteria->equalTo(2);
-    }
-
-    /**
-     * @expectedException BadMethodCallException
-     * @expectedExceptionMessage "filter" is not a valid filter name
-     */
-    public function testShouldThrowExceptionWhenCallingMethodDoesNotRefersToAValidFilter()
-    {
-        $criteria = new Criteria();
-        $criteria->foo->filter(2);
     }
 
     public function testShouldValidateUsingFiltersWhenRecordIsValid()
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria(new Factory());
         $criteria->foo->equalTo(2);
         $criteria->bar->equalTo(false);
 
@@ -74,7 +85,7 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldValidateUsingFiltersWhenRecordIsInvalid()
     {
-        $criteria = new Criteria();
+        $criteria = new Criteria(new Factory());
         $criteria->foo->equalTo(2);
         $criteria->bar->equalTo(true);
 
@@ -84,27 +95,5 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
         $record->baz = new Record();
 
         $this->assertFalse($criteria->isValid($record));
-    }
-
-    public function testShouldUseNotFilterWhenUsingTheWordNotInTheFilterName()
-    {
-        $criteria = new Criteria();
-        $criteria->foo->notEqualTo(42);
-
-        $record = new Record();
-        $record->foo = 42;
-
-        $this->assertFalse($criteria->isValid($record));
-    }
-
-    public function testShouldUseOneOfFilterWhenUsingTheWordOrInTheFilterName()
-    {
-        $criteria = new Criteria();
-        $criteria->foo->greaterThanOrEqualTo(42);
-
-        $record = new Record();
-        $record->foo = 42;
-
-        $this->assertTrue($criteria->isValid($record));
     }
 }
