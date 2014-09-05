@@ -36,12 +36,27 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($record, $collection->record($data));
     }
 
-    public function testShouldCreateNewCriteria()
+    public function testShouldUseFactoryToCreateCriteria()
     {
-        $collection = new Collection(new Factory());
-        $criteria = $collection->criteria();
+        $factory = $this
+            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Criteria', $criteria);
+        $filters = array('foo' => $this->getMock('PHPFluent\\ArrayStorage\\Filter\\Filter'));
+
+        $criteria = new Criteria();
+        $criteria->addFilter('foo', $filters['foo']);
+
+        $factory
+            ->expects($this->once())
+            ->method('criteria')
+            ->with($filters)
+            ->will($this->returnValue($criteria));
+
+        $collection = new Collection($factory);
+
+        $this->assertSame($criteria, $collection->criteria($filters));
     }
 
     public function testShouldCountRecordsInCollection()

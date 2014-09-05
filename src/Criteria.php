@@ -16,18 +16,6 @@ class Criteria implements Countable, Filter
     protected $currentIndex = null;
     protected $filters = array();
 
-    public function __construct(array $filters = array())
-    {
-        foreach ($filters as $index => $value) {
-            if ($value instanceof Filter) {
-                $this->addFilter($index, $value);
-                continue;
-            }
-
-            $this->addFilter($index, new EqualTo($value));
-        }
-    }
-
     public function getFilters()
     {
         return $this->filters;

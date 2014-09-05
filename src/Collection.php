@@ -24,12 +24,7 @@ class Collection implements Countable, IteratorAggregate
 
     public function criteria($criteria = null)
     {
-        if (! $criteria instanceof Criteria) {
-            $filters = (array) $criteria;
-            $criteria = new Criteria($filters);
-        }
-
-        return $criteria;
+        return $this->factory->criteria($criteria);
     }
 
     public function count()

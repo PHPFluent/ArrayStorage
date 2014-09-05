@@ -20,30 +20,6 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $criteria);
     }
 
-    public function testShouldAcceptFiltersOnConstructor()
-    {
-        $filters = array(
-            'foo' => $this->filter(),
-            'bar' => $this->filter(),
-        );
-        $criteria = new Criteria($filters);
-
-        $this->assertCount(2, $criteria);
-    }
-
-    public function testShouldAcceptFiltersAsKeyValueOnConstructor()
-    {
-        $filters = array(
-            'foo' => true,
-        );
-        $criteria = new Criteria($filters);
-        $filters = $criteria->getFilters();
-        list($index, $filter) = $filters[0];
-
-        $this->assertEquals('foo', $index);
-        $this->assertInstanceOf('PHPFluent\\ArrayStorage\\Filter\\EqualTo', $filter);
-    }
-
     public function testShouldReturnSelfWhenGettingANonExistentProperty()
     {
         $criteria = new Criteria();
