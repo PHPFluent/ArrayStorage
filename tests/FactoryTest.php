@@ -25,4 +25,39 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame($collection, $factory->collection($collection));
     }
+
+    public function testShouldCreateNewRecord()
+    {
+        $factory = new Factory();
+        $record = $factory->record();
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+    }
+
+    public function testShouldCreateNewRecordFromArray()
+    {
+        $factory = new Factory();
+        $data = array();
+        $record = $factory->record($data);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+    }
+
+    public function testShouldCreateNewRecordFromStdClass()
+    {
+        $factory = new Factory();
+        $data = new \stdClass();
+        $record = $factory->record($data);
+
+        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+    }
+
+    public function testShouldReturnTheSameInstanceWhenDataIsAlreadyARecordInstance()
+    {
+        $factory = new Factory();
+        $data = new Record();
+        $record = $factory->record($data);
+
+        $this->assertSame($data, $record);
+    }
 }

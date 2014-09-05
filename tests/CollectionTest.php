@@ -15,12 +15,25 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertAttributeSame($factory, 'factory', $collection);
     }
 
-    public function testShouldCreateNewRecord()
+    public function testShouldUseFactoryToCreateRecords()
     {
-        $collection = new Collection(new Factory());
-        $record = $collection->record();
+        $data = array('foo' => true);
+        $record = new Record($data);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+        $factory = $this
+            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $factory
+            ->expects($this->once())
+            ->method('record')
+            ->with($data)
+            ->will($this->returnValue($record));
+
+        $collection = new Collection($factory);
+
+        $this->assertSame($record, $collection->record($data));
     }
 
     public function testShouldCreateNewCriteria()
@@ -29,33 +42,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $criteria = $collection->criteria();
 
         $this->assertInstanceOf(__NAMESPACE__ . '\\Criteria', $criteria);
-    }
-
-    public function testShouldCreateNewRecordFromArray()
-    {
-        $collection = new Collection(new Factory());
-        $data = array();
-        $record = $collection->record($data);
-
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
-    }
-
-    public function testShouldCreateNewRecordFromStdClass()
-    {
-        $collection = new Collection(new Factory());
-        $data = new \stdClass();
-        $record = $collection->record($data);
-
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
-    }
-
-    public function testShouldReturnTheSameInstanceWhenDataIsAlreadyARecordInstance()
-    {
-        $collection = new Collection(new Factory());
-        $data = new Record();
-        $record = $collection->record($data);
-
-        $this->assertSame($data, $record);
     }
 
     public function testShouldCountRecordsInCollection()

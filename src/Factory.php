@@ -12,4 +12,14 @@ class Factory
 
         return $collection;
     }
+
+    public function record($record = null)
+    {
+        if (! $record instanceof Record) {
+            $data = (array) $record;
+            $record = new Record($data);
+        }
+
+        return $record;
+    }
 }

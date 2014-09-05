@@ -19,12 +19,7 @@ class Collection implements Countable, IteratorAggregate
 
     public function record($record = null)
     {
-        if (! $record instanceof Record) {
-            $data = (array) $record;
-            $record = new Record($data);
-        }
-
-        return $record;
+        return $this->factory->record($record);
     }
 
     public function criteria($criteria = null)
