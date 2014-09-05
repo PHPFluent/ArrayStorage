@@ -13,7 +13,7 @@ class Storage implements IteratorAggregate, Countable
     public function __get($name)
     {
         if (! isset($this->collections[$name])) {
-            $this->collections[$name] = new Collection($name);
+            $this->collections[$name] = new Collection();
         }
 
         return $this->collections[$name];

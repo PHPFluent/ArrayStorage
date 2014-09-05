@@ -8,22 +8,8 @@ use Countable;
 
 class Collection implements Countable, IteratorAggregate
 {
-    protected $name;
     protected $records = array();
     protected $lastRecordId = 0;
-
-    public function __construct($name, array $records = array())
-    {
-        $this->name = $name;
-        foreach ($records as $record) {
-            $this->insert($record);
-        }
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
 
     public function record($record = null)
     {
@@ -90,8 +76,8 @@ class Collection implements Countable, IteratorAggregate
     public function findAll($criteria = null, $limit = null)
     {
         $count = 0;
-        $results = array();
         $criteria = $this->criteria($criteria);
+        $collection = new static();
         foreach ($this->records as $record) {
             if (null !== $limit && $count == $limit) {
                 continue;
@@ -102,10 +88,10 @@ class Collection implements Countable, IteratorAggregate
             }
 
             $count++;
-            $results[] = $record;
+            $collection->insert($record);
         }
 
-        return new static($this->name, $results);
+        return $collection;
     }
 
     public function find($criteria = null)
