@@ -2,7 +2,10 @@
 
 namespace PHPFluent\ArrayStorage;
 
-class Record
+use ArrayIterator;
+use IteratorAggregate;
+
+class Record implements IteratorAggregate
 {
     protected $data = array('id' => null);
 
@@ -37,5 +40,10 @@ class Record
         foreach ($update as $key => $value) {
             $this->__set($key, $value);
         }
+    }
+
+    public function getIterator()
+    {
+        return new ArrayIterator($this->data);
     }
 }

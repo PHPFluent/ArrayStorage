@@ -48,4 +48,18 @@ class RecordTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($update['name'], $record->name);
     }
+
+    public function testShouldIterateOverRecord()
+    {
+        $record = new Record();
+        $record->id = 1;
+        $record->name = 'Henrique Moody';
+
+        $count = 0;
+        foreach ($record as $name => $value) {
+            $count++;
+        }
+
+        $this->assertEquals(2, $count);
+    }
 }
