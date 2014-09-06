@@ -38,20 +38,4 @@ class Record
             $this->__set($key, $value);
         }
     }
-
-    public function toArray($expandChildren = false)
-    {
-        $result = array();
-        foreach ($this->data as $key => $value) {
-            if ($value instanceof static && true === $expandChildren) {
-                $value = $value->toArray($expandChildren);
-            } elseif ($value instanceof static && true !== $expandChildren) {
-                $value = (int) $value->__toString() ?: null;
-            }
-
-            $result[$key] = $value;
-        }
-
-        return $result;
-    }
 }
