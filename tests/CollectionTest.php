@@ -217,34 +217,4 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertCount(2, $collection);
     }
-
-    public function testShouldConvertCollectionToArray()
-    {
-        $record1 = new Record(array('name' => 'A', 'child' => new Record(array('id' => 13))));
-        $record2 = new Record(array('name' => 'B', 'child' => new Record(array('id' => 42))));
-        $collection = new Collection(new Factory());
-        $collection->insert($record1);
-        $collection->insert($record2);
-        $expectedArray = array(
-            array('id' => 1, 'name' => 'A', 'child' => 13),
-            array('id' => 2, 'name' => 'B', 'child' => 42),
-        );
-
-        $this->assertSame($expectedArray, $collection->toArray());
-    }
-
-    public function testShouldConvertCollectionToExpandedeArray()
-    {
-        $record1 = new Record(array('name' => 'A', 'child' => new Record(array('id' => 13))));
-        $record2 = new Record(array('name' => 'B', 'child' => new Record(array('id' => 42))));
-        $collection = new Collection(new Factory());
-        $collection->insert($record1);
-        $collection->insert($record2);
-        $expectedArray = array(
-            array('id' => 1, 'name' => 'A', 'child' => array('id' => 13)),
-            array('id' => 2, 'name' => 'B', 'child' => array('id' => 42)),
-        );
-
-        $this->assertSame($expectedArray, $collection->toArray(true));
-    }
 }

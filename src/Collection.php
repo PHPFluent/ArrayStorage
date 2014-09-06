@@ -96,14 +96,4 @@ class Collection implements Countable, IteratorAggregate
 
         return $records->getIterator()->current();
     }
-
-    public function toArray($expandChildren = false)
-    {
-        $results = array();
-        foreach ($this->records as $record) {
-            $results[] = $record->toArray($expandChildren);
-        }
-
-        return $results;
-    }
 }

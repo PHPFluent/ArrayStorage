@@ -80,24 +80,6 @@ $storage = new Storage();
 $storage->users->delete();
 ```
 
-## Converting collection to an array
-
-```php
-$storage = new Storage();
-$collectionData = $storage->users->toArray();
-```
-
-The example above convert all Record objects that are children of Record objects into an string, but returning its `id` property.
-
-## Converting collection to an expanded array
-
-```php
-$storage = new Storage();
-$collectionData = $storage->users->toArray();
-```
-
-The example above convert all Record objects into an array.
-
 ## Finding multiple records into a collection
 
 ```php
