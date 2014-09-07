@@ -141,3 +141,22 @@ define a flag on the constructor of this converter, like:
 $converter = new Converter\Arr(false);
 $converter->convert($storage->collectionName); // Returns an array of Record objects
 ```
+
+### Json
+
+Converts data into JSON format.
+
+```php
+$converter = new Converter\Json();
+$converter->convert($storage->collectionName); // Returns an string with the JSON
+```
+
+You also can define [json_encode()](http://php.net/json_encode) options on the
+constructor of this converter, like:
+
+```php
+$converter = new Converter\Json(JSON_NUMERIC_CHECK);
+$converter->convert($storage->collectionName); // Returns the JSON but encodes numeric strings as numbers
+```
+
+We use `JSON_PRETTY_PRINT` as default option.
