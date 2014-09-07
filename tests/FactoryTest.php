@@ -2,8 +2,6 @@
 
 namespace PHPFluent\ArrayStorage;
 
-use PHPFluent\ArrayStorage\Filter;
-
 /**
  * @covers PHPFluent\ArrayStorage\Factory
  */

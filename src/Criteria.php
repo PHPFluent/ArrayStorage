@@ -2,13 +2,8 @@
 
 namespace PHPFluent\ArrayStorage;
 
-use BadMethodCallException;
 use Countable;
-use PHPFluent\ArrayStorage\Filter\EqualTo;
 use PHPFluent\ArrayStorage\Filter\Filter;
-use PHPFluent\ArrayStorage\Filter\Not;
-use PHPFluent\ArrayStorage\Filter\OneOf;
-use ReflectionClass;
 use UnexpectedValueException;
 
 class Criteria implements Countable, Filter
