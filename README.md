@@ -109,3 +109,35 @@ $criteria->foo->equalTo(2)
 
 $storage->users->find($criteria);
 ```
+
+## Transforming data into other formats
+
+Sometimes you want to convert data into other formats, for that cases we have the *converters*.
+
+The converters accept any object that implements [Traversable](http://php.net/traversable)
+interface and since `Record`, `Collection` and `Storage` classes implements this interface
+you are able to convert any of them into other formats.
+
+For the examples below we assume you have the follow `use` statements:
+
+```php
+use PHPFluent\ArrayStorage\Converter;
+```
+
+### Arr
+
+Converts data into an array.
+
+```php
+$converter = new Converter\Arr();
+$converter->convert($storage->collectionName); // Returns an array with the records as array too
+```
+
+If you do not want to convert the children of the object (values that also
+implement [Traversable](http://php.net/traversable) interface) you just have to
+define a flag on the constructor of this converter, like:
+
+```php
+$converter = new Converter\Arr(false);
+$converter->convert($storage->collectionName); // Returns an array of Record objects
+```
