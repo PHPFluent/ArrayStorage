@@ -160,3 +160,12 @@ $converter->convert($storage->collectionName); // Returns the JSON but encodes n
 ```
 
 We use `JSON_PRETTY_PRINT` as default option.
+
+### Xml
+
+Converts data into XML format.
+
+```php
+$converter = new Converter\Xml();
+$converter->convert($storage->collectionName); // Returns an string with the XML
+```
