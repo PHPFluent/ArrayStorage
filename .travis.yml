@@ -1,3 +1,6 @@
+sudo:
+  false
+
 language:
   php
 
@@ -5,11 +8,20 @@ php:
   - 5.4
   - 5.5
   - 5.6
+  - hhvm
+  - hhvm-nightly
+
+cache:
+  directories:
+    - vendor
 
 before_script:
-  - make install
+  - composer install --dev --no-interaction --prefer-source
 
 script:
-  - make phpcs
-  - make phpmd
-  - make phpunit
+  - vendor/bin/phpunit --configuration phpunit.xml.dist --colors
+
+matrix:
+  allow_failures:
+    - php: hhvm
+    - php: hhvm-nightly
