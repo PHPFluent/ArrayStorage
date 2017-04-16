@@ -1,4 +1,5 @@
 # PHPFluent\ArrayStorage
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/PHPFluent/ArrayStorage?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://secure.travis-ci.org/PHPFluent/ArrayStorage.png)](http://travis-ci.org/PHPFluent/ArrayStorage)
 [![Total Downloads](https://poser.pugx.org/phpfluent/arraystorage/downloads.png)](https://packagist.org/packages/phpfluent/arraystorage)
 [![License](https://poser.pugx.org/phpfluent/arraystorage/license.png)](https://packagist.org/packages/phpfluent/arraystorage)
