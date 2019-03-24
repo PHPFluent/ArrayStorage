@@ -5,11 +5,11 @@ namespace PHPFluent\ArrayStorage\Filter;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\OneOf
  */
-class OneOfTest extends \PHPUnit_Framework_TestCase
+class OneOfTest extends \PHPUnit\Framework\TestCase
 {
     protected function filter($return = false)
     {
-        return $this->getMock('PHPFluent\ArrayStorage\Filter\Filter');
+        return $this->createMock('PHPFluent\ArrayStorage\Filter\Filter');
     }
 
     public function testShouldAcceptFiltersOnConstructor()
@@ -23,12 +23,11 @@ class OneOfTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($filters, $filter->getFilters());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Filter is not valid
-     */
     public function testShouldThrowsExceptionWhenFilterIsNotValid()
     {
+        $this->expectExceptionObject(
+            new \InvalidArgumentException('Filter is not valid')
+        );
         $filters = array(
             $this->filter(),
             'foo',

@@ -5,16 +5,8 @@ namespace PHPFluent\ArrayStorage;
 /**
  * @covers PHPFluent\ArrayStorage\Collection
  */
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
-    public function testShouldAcceptAnInstanceOfFactoryOnConstructor()
-    {
-        $factory = new Factory();
-        $collection = new Collection($factory);
-
-        $this->assertAttributeSame($factory, 'factory', $collection);
-    }
-
     public function testShouldUseFactoryToCreateRecords()
     {
         $data = array('foo' => true);
@@ -43,7 +35,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $filters = array('foo' => $this->getMock('PHPFluent\\ArrayStorage\\Filter\\Filter'));
+        $filters = array('foo' => $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter'));
 
         $criteria = new Criteria($factory);
         $criteria->addFilter('foo', $filters['foo']);

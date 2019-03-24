@@ -5,24 +5,8 @@ namespace PHPFluent\ArrayStorage\Filter;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\EqualTo
  */
-class EqualToTest extends \PHPUnit_Framework_TestCase
+class EqualToTest extends \PHPUnit\Framework\TestCase
 {
-    public function testShouldAcceptExpectedValueOnConstructor()
-    {
-        $expected = new \stdClass();
-        $filter = new EqualTo($expected);
-
-        $this->assertAttributeSame($expected, 'expected', $filter);
-    }
-
-    public function testShouldAcceptPrecisionOnConstructor()
-    {
-        $precision = 'normal';
-        $filter = new EqualTo(42, $precision);
-
-        $this->assertAttributeSame($precision, 'precision', $filter);
-    }
-
     public function testShouldValidateUsingNormalPrecision()
     {
         $filter = new EqualTo(42, 'normal');

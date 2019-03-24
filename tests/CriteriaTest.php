@@ -5,17 +5,11 @@ namespace PHPFluent\ArrayStorage;
 /**
  * @covers PHPFluent\ArrayStorage\Criteria
  */
-class CriteriaTest extends \PHPUnit_Framework_TestCase
+class CriteriaTest extends \PHPUnit\Framework\TestCase
 {
     protected function filter()
     {
-        return $this->getMock('PHPFluent\ArrayStorage\Filter\Filter');
-    }
-
-    public function testShouldAcceptFactoryOnConstructor()
-    {
-        $factory = new Factory();
-        $criteria = new Criteria($factory);
+        return $this->createMock('PHPFluent\ArrayStorage\Filter\Filter');
     }
 
     public function testShouldAddFilter()
@@ -46,9 +40,9 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldUseFactoryToCreateFilters()
     {
-        $filter = $this->getMock('PHPFluent\\ArrayStorage\\Filter\\Filter');
+        $filter = $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter');
 
-        $factory = $this->getMock('PHPFluent\\ArrayStorage\\Factory');
+        $factory = $this->createMock('PHPFluent\\ArrayStorage\\Factory');
         $factory
             ->expects($this->once())
             ->method('filter')
@@ -59,12 +53,11 @@ class CriteriaTest extends \PHPUnit_Framework_TestCase
         $criteria->foo->someFilter(2);
     }
 
-    /**
-     * @expectedException UnexpectedValueException
-     * @expectedExceptionMessage You first need to call a property for this filter
-     */
     public function testShouldThrowExceptionWhenCallingAFilterBeforeCallAProperty()
     {
+        $this->expectExceptionObject(
+            new \UnexpectedValueException('You first need to call a property for this filter')
+        );
         $criteria = new Criteria(new Factory());
         $criteria->equalTo(2);
     }

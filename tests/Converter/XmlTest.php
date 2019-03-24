@@ -10,28 +10,13 @@ use stdClass;
 /**
  * @covers PHPFluent\ArrayStorage\Converter\Xml
  */
-class XmlTest extends \PHPUnit_Framework_TestCase
+class XmlTest extends \PHPUnit\Framework\TestCase
 {
     protected $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new Factory();
-    }
-
-    public function testShouldAcceptAnInstanceOfDOMDocumentOnConstructor()
-    {
-        $document = new DOMDocument();
-        $converter = new Xml($document);
-
-        $this->assertAttributeSame($document, 'document', $converter);
-    }
-
-    public function testShouldHaveAConfiguredInstanceOfDOMDocumentByDefault()
-    {
-        $converter = new Xml();
-
-        $this->assertAttributeInstanceOf('DOMDocument', 'document', $converter);
     }
 
     public function testShouldConvertRecord()

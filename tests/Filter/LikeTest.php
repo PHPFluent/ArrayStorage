@@ -5,28 +5,8 @@ namespace PHPFluent\ArrayStorage\Filter;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Like
  */
-class LikeTest extends \PHPUnit_Framework_TestCase
+class LikeTest extends \PHPUnit\Framework\TestCase
 {
-    public function patternsProvider()
-    {
-        return array(
-            array('String', '/String/'),
-            array('%String', '/.*String/'),
-            array('Str_ng', '/Str.ng/'),
-            array('Str/ng', '/Str\/ng/'),
-        );
-    }
-
-    /**
-     * @dataProvider patternsProvider
-     */
-    public function testShouldTransformPatternsToRegexOnConstructor($pattern, $regex)
-    {
-        $filter = new Like($pattern);
-
-        $this->assertAttributeSame($regex, 'pattern', $filter);
-    }
-
     public function testShouldValidateWhenPatternMatch()
     {
         $pattern = 'My name is %';

@@ -7,17 +7,8 @@ use DateTime;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\GreaterThan
  */
-class GreaterThanTest extends \PHPUnit_Framework_TestCase
+class GreaterThanTest extends \PHPUnit\Framework\TestCase
 {
-    public function testShouldAcceptMinimumOnConstructor()
-    {
-        $minimum = 1;
-
-        $filter = new GreaterThan($minimum);
-
-        $this->assertAttributeSame($minimum, 'minimum', $filter);
-    }
-
     public function testShouldValidateWhenInInterval()
     {
         $minimum = DateTime::createFromFormat('Y-m-d', '2014-01-01');

@@ -5,7 +5,7 @@ namespace PHPFluent\ArrayStorage;
 /**
  * @covers PHPFluent\ArrayStorage\Record
  */
-class RecordTest extends \PHPUnit_Framework_TestCase
+class RecordTest extends \PHPUnit\Framework\TestCase
 {
     public function testShouldDefineAndReturnPropertyDynamically()
     {

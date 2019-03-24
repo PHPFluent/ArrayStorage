@@ -9,29 +9,13 @@ use PHPFluent\ArrayStorage\Storage;
 /**
  * @covers PHPFluent\ArrayStorage\Converter\Json
  */
-class JsonTest extends \PHPUnit_Framework_TestCase
+class JsonTest extends \PHPUnit\Framework\TestCase
 {
     protected $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new Factory();
-    }
-
-    public function testShouldAcceptJsonEncodeFlagsOnConstructor()
-    {
-        $arrayConverter = new Arr();
-        $jsonEncodeFlags = JSON_NUMERIC_CHECK;
-        $converter = new Json($jsonEncodeFlags);
-
-        $this->assertAttributeSame($jsonEncodeFlags, 'jsonEncodeFlags', $converter);
-    }
-
-    public function testShouldUseJsonPrettyPrintAsDefaultFlag()
-    {
-        $converter = new Json();
-
-        $this->assertAttributeSame(JSON_PRETTY_PRINT, 'jsonEncodeFlags', $converter);
     }
 
     public function testShouldUseDefinedJsonEncodeFlags()
@@ -45,27 +29,11 @@ class JsonTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testShouldAcceptAnInstanceOfArrConverterOnConstructor()
-    {
-        $arrayConverter = new Arr();
-        $converter = new Json(JSON_PRETTY_PRINT, $arrayConverter);
-
-        $this->assertAttributeSame($arrayConverter, 'arrayConverter', $converter);
-    }
-
-    public function testShouldHaveInstanceOfArrConverterUsingRecursionByDefault()
-    {
-        $arrayConverter = new Arr(true);
-        $converter = new Json();
-
-        $this->assertAttributeEquals($arrayConverter, 'arrayConverter', $converter);
-    }
-
     public function testShouldUseDefinedArrConverterInstance()
     {
         $traversable = new ArrayIterator(array('foo' => '1'));
 
-        $arrayConverter = $this->getMock(__NAMESPACE__ . '\\Arr');
+        $arrayConverter = $this->createMock(__NAMESPACE__ . '\\Arr');
         $arrayConverter
             ->expects($this->once())
             ->method('convert')

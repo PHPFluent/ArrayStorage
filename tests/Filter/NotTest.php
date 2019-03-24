@@ -5,11 +5,11 @@ namespace PHPFluent\ArrayStorage\Filter;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Not
  */
-class NotTest extends \PHPUnit_Framework_TestCase
+class NotTest extends \PHPUnit\Framework\TestCase
 {
     protected function filter()
     {
-        return $this->getMock('PHPFluent\ArrayStorage\Filter\Filter');
+        return $this->createMock('PHPFluent\ArrayStorage\Filter\Filter');
     }
 
     public function testShouldAcceptFilterOnConstructor()

@@ -7,19 +7,8 @@ use DateTime;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Between
  */
-class BetweenTest extends \PHPUnit_Framework_TestCase
+class BetweenTest extends \PHPUnit\Framework\TestCase
 {
-    public function testShouldAcceptMinimumAndMaximumOnConstructor()
-    {
-        $minimum = 1;
-        $maximum = 10;
-
-        $filter = new Between($minimum, $maximum);
-
-        $this->assertAttributeSame($minimum, 'minimum', $filter);
-        $this->assertAttributeSame($maximum, 'maximum', $filter);
-    }
-
     public function testShouldValidateWhenInInterval()
     {
         $minimum = DateTime::createFromFormat('Y-m-d', '2014-01-01');

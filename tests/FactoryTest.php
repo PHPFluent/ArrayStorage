@@ -5,7 +5,7 @@ namespace PHPFluent\ArrayStorage;
 /**
  * @covers PHPFluent\ArrayStorage\Factory
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testShouldCreateACollection()
     {
@@ -72,7 +72,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     public function testShouldCreateACriteriaFromAKeyValueArrayOfFilters()
     {
         $inputFilters = array(
-            'foo' => $this->getMock(__NAMESPACE__ . '\\Filter\\Filter'),
+            'foo' => $this->createMock(__NAMESPACE__ . '\\Filter\\Filter'),
         );
         $factory = new Factory();
         $criteria = $factory->criteria($inputFilters);
@@ -152,12 +152,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedFilter, $actualFilter);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage "filter" is not a valid filter name
-     */
     public function testShouldThrowExceptionWhenCallingMethodDoesNotRefersToAValidFilter()
     {
+        $this->expectExceptionObject(
+            new \InvalidArgumentException('"filter" is not a valid filter name')
+        );
         $factory = new Factory();
         $factory->filter('filter');
     }

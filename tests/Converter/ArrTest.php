@@ -8,27 +8,13 @@ use PHPFluent\ArrayStorage\Storage;
 /**
  * @covers PHPFluent\ArrayStorage\Converter\Arr
  */
-class ArrTest extends \PHPUnit_Framework_TestCase
+class ArrTest extends \PHPUnit\Framework\TestCase
 {
     protected $factory;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = new Factory();
-    }
-
-    public function testShouldAcceptRecursiveFlagOnConstructor()
-    {
-        $converter = new Arr(false);
-
-        $this->assertAttributeEquals(false, 'recursive', $converter);
-    }
-
-    public function testShouldHaveRecursiveFlagAsTrueByDefault()
-    {
-        $converter = new Arr();
-
-        $this->assertAttributeEquals(true, 'recursive', $converter);
     }
 
     public function testShouldConvertRecord()

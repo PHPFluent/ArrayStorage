@@ -5,27 +5,8 @@ namespace PHPFluent\ArrayStorage;
 /**
  * @covers PHPFluent\ArrayStorage\Storage
  */
-class StorageTest extends \PHPUnit_Framework_TestCase
+class StorageTest extends \PHPUnit\Framework\TestCase
 {
-    public function testShouldHaveAnInstanceOfFactoryByDefault()
-    {
-        $storage = new Storage();
-
-        $this->assertAttributeInstanceOf('PHPFluent\\ArrayStorage\\Factory', 'factory', $storage);
-    }
-
-    public function testShouldAcceptAnInstanceOfFactoryOnConstructor()
-    {
-        $factory = $this
-            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $storage = new Storage($factory);
-
-        $this->assertAttributeSame($factory, 'factory', $storage);
-    }
-
     public function testShouldGetCollectionWhenPropertyDoesNoExists()
     {
         $storage = new Storage();

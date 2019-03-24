@@ -7,17 +7,8 @@ use DateTime;
 /**
  * @covers PHPFluent\ArrayStorage\Filter\LessThan
  */
-class LessThanTest extends \PHPUnit_Framework_TestCase
+class LessThanTest extends \PHPUnit\Framework\TestCase
 {
-    public function testShouldAcceptMaximumOnConstructor()
-    {
-        $maximum = 10;
-
-        $filter = new LessThan($maximum);
-
-        $this->assertAttributeSame($maximum, 'maximum', $filter);
-    }
-
     public function testShouldValidateWhenInInterval()
     {
         $maximum = DateTime::createFromFormat('Y-m-d', '2014-03-01');
