@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
+
+use PHPUnit\Framework\TestCase;
+use function count;
+use function iterator_to_array;
 
 /**
  * @covers PHPFluent\ArrayStorage\Collection
  */
-class CollectionTest extends \PHPUnit\Framework\TestCase
+class CollectionTest extends TestCase
 {
-    public function testShouldUseFactoryToCreateRecords()
+    public function testShouldUseFactoryToCreateRecords(): void
     {
-        $data = array('foo' => true);
+        $data = ['foo' => true];
         $record = new Record($data);
 
         $factory = $this
@@ -28,14 +34,14 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($record, $collection->record($data));
     }
 
-    public function testShouldUseFactoryToCreateCriteria()
+    public function testShouldUseFactoryToCreateCriteria(): void
     {
         $factory = $this
             ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
             ->disableOriginalConstructor()
             ->getMock();
 
-        $filters = array('foo' => $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter'));
+        $filters = ['foo' => $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter')];
 
         $criteria = new Criteria($factory);
         $criteria->addFilter('foo', $filters['foo']);
@@ -51,23 +57,23 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($criteria, $collection->criteria($filters));
     }
 
-    public function testShouldCountRecordsInCollection()
+    public function testShouldCountRecordsInCollection(): void
     {
         $collection = new Collection(new Factory());
 
         $this->assertCount(0, $collection);
     }
 
-    public function testShouldInsertRecordToCollection()
+    public function testShouldInsertRecordToCollection(): void
     {
         $collection = new Collection(new Factory());
-        $record = new Record(array('id' => 1, 'name' => 'Jéssica Santana'));
+        $record = new Record(['id' => 1, 'name' => 'Jéssica Santana']);
         $collection->insert($record);
 
         $this->assertCount(1, $collection);
     }
 
-    public function testShouldInsertRecordToCollectionAndCreateIdWhenRecordDoesNotHaveOne()
+    public function testShouldInsertRecordToCollectionAndCreateIdWhenRecordDoesNotHaveOne(): void
     {
         $collection = new Collection(new Factory());
         $record1 = new Record();
@@ -78,21 +84,18 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(2, $record2->id);
     }
 
-    public function testShouldIterateOverRecords()
+    public function testShouldIterateOverRecords(): void
     {
         $collection = new Collection(new Factory());
         $collection->insert(new Record());
         $collection->insert(new Record());
         $collection->insert(new Record());
-        $count = 0;
-        foreach ($collection as $record) {
-            $count++;
-        }
+        $count = count(iterator_to_array($collection));
 
         $this->assertEquals(3, $count);
     }
 
-    public function testShouldReturnAnInstanceOfCollectionWhenFindingRecords()
+    public function testShouldReturnAnInstanceOfCollectionWhenFindingRecords(): void
     {
         $factory = $this
             ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
@@ -110,56 +113,56 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection->findAll(), $result);
     }
 
-    public function testShouldReturnRecordsAccordingToCriteriaWhenFindingRecords()
+    public function testShouldReturnRecordsAccordingToCriteriaWhenFindingRecords(): void
     {
         $collection = new Collection(new Factory());
-        $collection->insert(array('name' => 'A'));
-        $collection->insert(array('name' => 'B'));
-        $collection->insert(array('name' => 'A'));
-        $collection->insert(array('name' => 'C'));
-        $collection->insert(array('name' => 'A'));
-        $criteria = array('name' => 'A');
+        $collection->insert(['name' => 'A']);
+        $collection->insert(['name' => 'B']);
+        $collection->insert(['name' => 'A']);
+        $collection->insert(['name' => 'C']);
+        $collection->insert(['name' => 'A']);
+        $criteria = ['name' => 'A'];
         $result = $collection->findAll($criteria);
 
         $this->assertCount(3, $result);
     }
 
-    public function testShouldReturnRecordsAccordingToCriteriaAndLimitWhenFindingRecords()
+    public function testShouldReturnRecordsAccordingToCriteriaAndLimitWhenFindingRecords(): void
     {
         $collection = new Collection(new Factory());
-        $collection->insert(array('name' => 'A'));
-        $collection->insert(array('name' => 'B'));
-        $collection->insert(array('name' => 'A'));
-        $collection->insert(array('name' => 'C'));
-        $collection->insert(array('name' => 'A'));
-        $criteria = array('name' => 'A');
+        $collection->insert(['name' => 'A']);
+        $collection->insert(['name' => 'B']);
+        $collection->insert(['name' => 'A']);
+        $collection->insert(['name' => 'C']);
+        $collection->insert(['name' => 'A']);
+        $criteria = ['name' => 'A'];
         $result = $collection->findAll($criteria, 2);
 
         $this->assertCount(2, $result);
     }
 
-    public function testShouldReturnRecordAccordingToCriteria()
+    public function testShouldReturnRecordAccordingToCriteria(): void
     {
-        $record1 = new Record(array('name' => 'A'));
-        $record2 = new Record(array('name' => 'B'));
+        $record1 = new Record(['name' => 'A']);
+        $record2 = new Record(['name' => 'B']);
         $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
-        $criteria = array('name' => 'B');
+        $criteria = ['name' => 'B'];
         $result = $collection->find($criteria);
 
         $this->assertSame($record2, $result);
     }
 
-    public function testShouldUpdateRecords()
+    public function testShouldUpdateRecords(): void
     {
-        $record1 = new Record(array('name' => 'A'));
-        $record2 = new Record(array('name' => 'B'));
+        $record1 = new Record(['name' => 'A']);
+        $record2 = new Record(['name' => 'B']);
         $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
-        $update = array('name' => 'C');
-        $result = $collection->update($update);
+        $update = ['name' => 'C'];
+        $collection->update($update);
         $expectedTrue = true;
         foreach ($collection as $record) {
             $expectedTrue = $expectedTrue && ($record->name == 'C');
@@ -168,16 +171,16 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($expectedTrue);
     }
 
-    public function testShouldUpdateRecordsAccordingToCriteria()
+    public function testShouldUpdateRecordsAccordingToCriteria(): void
     {
-        $record1 = new Record(array('name' => 'A'));
-        $record2 = new Record(array('name' => 'A'));
+        $record1 = new Record(['name' => 'A']);
+        $record2 = new Record(['name' => 'A']);
         $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
-        $update = array('name' => 'C');
-        $criteria = array('name' => 'D');
-        $result = $collection->update($update, $criteria);
+        $update = ['name' => 'C'];
+        $criteria = ['name' => 'D'];
+        $collection->update($update, $criteria);
         $expectedTrue = true;
         foreach ($collection as $record) {
             $expectedTrue = $expectedTrue && ($record->name == 'A');
@@ -186,10 +189,10 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($expectedTrue);
     }
 
-    public function testShouldDeleteRecords()
+    public function testShouldDeleteRecords(): void
     {
-        $record1 = new Record(array('name' => 'A'));
-        $record2 = new Record(array('name' => 'B'));
+        $record1 = new Record(['name' => 'A']);
+        $record2 = new Record(['name' => 'B']);
         $collection = new Collection(new Factory());
         $collection->insert($record1);
         $collection->insert($record2);
@@ -198,13 +201,13 @@ class CollectionTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(0, $collection);
     }
 
-    public function testShouldDeleteRecordsAccordingToCriteria()
+    public function testShouldDeleteRecordsAccordingToCriteria(): void
     {
         $collection = new Collection(new Factory());
-        $collection->insert(array('name' => 'A'));
-        $collection->insert(array('name' => 'B'));
-        $collection->insert(array('name' => 'C'));
-        $criteria = array('name' => 'B');
+        $collection->insert(['name' => 'A']);
+        $collection->insert(['name' => 'B']);
+        $collection->insert(['name' => 'C']);
+        $criteria = ['name' => 'B'];
         $collection->delete($criteria);
 
         $this->assertCount(2, $collection);

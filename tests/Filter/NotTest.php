@@ -1,18 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Not
  */
-class NotTest extends \PHPUnit\Framework\TestCase
+class NotTest extends TestCase
 {
-    protected function filter()
+    protected function filter(): Filter
     {
-        return $this->createMock('PHPFluent\ArrayStorage\Filter\Filter');
+        return $this->createMock(Filter::class);
     }
 
-    public function testShouldAcceptFilterOnConstructor()
+    public function testShouldAcceptFilterOnConstructor(): void
     {
         $deniableMock = $this->filter();
         $filter = new Not($deniableMock);
@@ -20,7 +24,7 @@ class NotTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($deniableMock, $filter->getFilter());
     }
 
-    public function testShouldReturnTrueWhenGivenFilterReturnsFalse()
+    public function testShouldReturnTrueWhenGivenFilterReturnsFalse(): void
     {
         $deniableMock = $this->filter();
         $deniableMock
@@ -33,7 +37,7 @@ class NotTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($filter->isValid('Some input'));
     }
 
-    public function testShouldReturnFalseWhenGivenFilterReturnsTrue()
+    public function testShouldReturnFalseWhenGivenFilterReturnsTrue(): void
     {
         $deniableMock = $this->filter();
         $deniableMock

@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
 
 interface Filter
 {
-    public function isValid($value);
+    /**
+     * @param mixed $value
+     */
+    public function isValid($value): bool;
 }

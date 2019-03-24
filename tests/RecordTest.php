@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
+
+use PHPUnit\Framework\TestCase;
+use function count;
+use function iterator_to_array;
 
 /**
  * @covers PHPFluent\ArrayStorage\Record
  */
-class RecordTest extends \PHPUnit\Framework\TestCase
+class RecordTest extends TestCase
 {
-    public function testShouldDefineAndReturnPropertyDynamically()
+    public function testShouldDefineAndReturnPropertyDynamically(): void
     {
         $record = new Record();
         $record->name = 'Henrique Moody';
@@ -15,21 +21,21 @@ class RecordTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('Henrique Moody', $record->name);
     }
 
-    public function testShouldDefineDataOnConstructor()
+    public function testShouldDefineDataOnConstructor(): void
     {
-        $record = new Record(array('name' => 'Henrique Moody'));
+        $record = new Record(['name' => 'Henrique Moody']);
 
         $this->assertEquals('Henrique Moody', $record->name);
     }
 
-    public function testShouldReturnNullIfPropertyDoesNotExists()
+    public function testShouldReturnNullIfPropertyDoesNotExists(): void
     {
         $record = new Record();
 
         $this->assertNull($record->name);
     }
 
-    public function testShouldReturnValueOfKeyIdWhenConvertingToString()
+    public function testShouldReturnValueOfKeyIdWhenConvertingToString(): void
     {
         $record = new Record();
         $record->id = 42;
@@ -37,11 +43,11 @@ class RecordTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('42', (string) $record);
     }
 
-    public function testShouldUpdateDateFromArray()
+    public function testShouldUpdateDateFromArray(): void
     {
-        $update = array(
-            'name' => 'Jéssica Santana'
-        );
+        $update = [
+            'name' => 'Jéssica Santana',
+        ];
         $record = new Record();
         $record->name = 'Henrique Moody';
         $record->update($update);
@@ -49,16 +55,13 @@ class RecordTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($update['name'], $record->name);
     }
 
-    public function testShouldIterateOverRecord()
+    public function testShouldIterateOverRecord(): void
     {
         $record = new Record();
         $record->id = 1;
         $record->name = 'Henrique Moody';
 
-        $count = 0;
-        foreach ($record as $name => $value) {
-            $count++;
-        }
+        $count = count(iterator_to_array($record));
 
         $this->assertEquals(2, $count);
     }

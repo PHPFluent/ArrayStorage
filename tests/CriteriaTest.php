@@ -1,18 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
+
+use PHPFluent\ArrayStorage\Filter\Filter;
+use PHPUnit\Framework\TestCase;
+use UnexpectedValueException;
 
 /**
  * @covers PHPFluent\ArrayStorage\Criteria
  */
-class CriteriaTest extends \PHPUnit\Framework\TestCase
+class CriteriaTest extends TestCase
 {
-    protected function filter()
+    protected function filter(): Filter
     {
-        return $this->createMock('PHPFluent\ArrayStorage\Filter\Filter');
+        return $this->createMock(Filter::class);
     }
 
-    public function testShouldAddFilter()
+    public function testShouldAddFilter(): void
     {
         $criteria = new Criteria(new Factory());
         $criteria->addFilter('foo', $this->filter());
@@ -20,25 +26,25 @@ class CriteriaTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(1, $criteria);
     }
 
-    public function testShouldReturnSelfWhenGettingANonExistentProperty()
+    public function testShouldReturnSelfWhenGettingNonExistentProperty(): void
     {
         $criteria = new Criteria(new Factory());
 
         $this->assertSame($criteria, $criteria->foo);
     }
 
-    public function testShouldAddFilterUsingMethodOverload()
+    public function testShouldAddFilterUsingMethodOverload(): void
     {
         $criteria = new Criteria(new Factory());
         $criteria->foo->equalTo(2);
         $filters = $criteria->getFilters();
-        list($index, $filter) = $filters[0];
+        [$index, $filter] = $filters[0];
 
         $this->assertEquals('foo', $index);
         $this->assertInstanceOf('PHPFluent\\ArrayStorage\\Filter\\EqualTo', $filter);
     }
 
-    public function testShouldUseFactoryToCreateFilters()
+    public function testShouldUseFactoryToCreateFilters(): void
     {
         $filter = $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter');
 
@@ -53,16 +59,16 @@ class CriteriaTest extends \PHPUnit\Framework\TestCase
         $criteria->foo->someFilter(2);
     }
 
-    public function testShouldThrowExceptionWhenCallingAFilterBeforeCallAProperty()
+    public function testShouldThrowExceptionWhenCallingFilterBeforeCallProperty(): void
     {
         $this->expectExceptionObject(
-            new \UnexpectedValueException('You first need to call a property for this filter')
+            new UnexpectedValueException('You first need to call a property for this filter')
         );
         $criteria = new Criteria(new Factory());
         $criteria->equalTo(2);
     }
 
-    public function testShouldValidateUsingFiltersWhenRecordIsValid()
+    public function testShouldValidateUsingFiltersWhenRecordIsValid(): void
     {
         $criteria = new Criteria(new Factory());
         $criteria->foo->equalTo(2);
@@ -76,7 +82,7 @@ class CriteriaTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($criteria->isValid($record));
     }
 
-    public function testShouldValidateUsingFiltersWhenRecordIsInvalid()
+    public function testShouldValidateUsingFiltersWhenRecordIsInvalid(): void
     {
         $criteria = new Criteria(new Factory());
         $criteria->foo->equalTo(2);

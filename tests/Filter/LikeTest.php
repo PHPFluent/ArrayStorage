@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Like
  */
-class LikeTest extends \PHPUnit\Framework\TestCase
+class LikeTest extends TestCase
 {
-    public function testShouldValidateWhenPatternMatch()
+    public function testShouldValidateWhenPatternMatch(): void
     {
         $pattern = 'My name is %';
         $filter = new Like($pattern);
@@ -15,7 +19,7 @@ class LikeTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($filter->isValid('My name is Jhon'));
     }
 
-    public function testShouldValidateWhenPatternDoesNotMatch()
+    public function testShouldValidateWhenPatternDoesNotMatch(): void
     {
         $pattern = 'My _me is';
         $filter = new Like($pattern);
@@ -23,7 +27,7 @@ class LikeTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($filter->isValid('My name is Jhon'));
     }
 
-    public function testShouldValidateMatchingCase()
+    public function testShouldValidateMatchingCase(): void
     {
         $pattern = 'Henrique Moody';
         $filter = new Like($pattern);

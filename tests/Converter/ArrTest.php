@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Converter;
 
 use PHPFluent\ArrayStorage\Factory;
 use PHPFluent\ArrayStorage\Storage;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Converter\Arr
  */
-class ArrTest extends \PHPUnit\Framework\TestCase
+class ArrTest extends TestCase
 {
+    /**
+     * @var Factory
+     */
     protected $factory;
 
     protected function setUp(): void
@@ -17,45 +23,45 @@ class ArrTest extends \PHPUnit\Framework\TestCase
         $this->factory = new Factory();
     }
 
-    public function testShouldConvertRecord()
+    public function testShouldConvertRecord(): void
     {
         $converter = new Arr(false);
 
         $record = $this->factory->record();
         $record->id = 10;
         $record->name = 'Henrique Moody';
-        $record->child = $this->factory->record(array('id' => 10));
+        $record->child = $this->factory->record(['id' => 10]);
 
-        $expectedValue = array(
+        $expectedValue = [
             'id' => $record->id,
             'name' => $record->name,
             'child' => $record->child,
-        );
+        ];
         $actualValue = $converter->convert($record);
 
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertRecordRecursively()
+    public function testShouldConvertRecordRecursively(): void
     {
         $converter = new Arr(true);
 
         $record = $this->factory->record();
         $record->id = 10;
         $record->name = 'Henrique Moody';
-        $record->child = $this->factory->record(array('id' => 10));
+        $record->child = $this->factory->record(['id' => 10]);
 
-        $expectedValue = array(
+        $expectedValue = [
             'id' => $record->id,
             'name' => $record->name,
-            'child' => array('id' => $record->child->id),
-        );
+            'child' => ['id' => $record->child->id],
+        ];
         $actualValue = $converter->convert($record);
 
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertCollection()
+    public function testShouldConvertCollection(): void
     {
         $converter = new Arr(false);
 
@@ -68,17 +74,17 @@ class ArrTest extends \PHPUnit\Framework\TestCase
         $collection->insert($record2);
         $collection->insert($record3);
 
-        $expectedValue = array(
+        $expectedValue = [
             $record1,
             $record2,
             $record3,
-        );
+        ];
         $actualValue = $converter->convert($collection);
 
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertCollectionRecursively()
+    public function testShouldConvertCollectionRecursively(): void
     {
         $converter = new Arr(true);
 
@@ -91,32 +97,32 @@ class ArrTest extends \PHPUnit\Framework\TestCase
         $collection->insert($record2);
         $collection->insert($record3);
 
-        $expectedValue = array(
-            array('id' => 1),
-            array('id' => 2),
-            array('id' => 3),
-        );
+        $expectedValue = [
+            ['id' => 1],
+            ['id' => 2],
+            ['id' => 3],
+        ];
         $actualValue = $converter->convert($collection);
 
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertStorage()
+    public function testShouldConvertStorage(): void
     {
         $converter = new Arr(false);
 
         $storage = new Storage($this->factory);
-        $storage->whatever->insert(array());
+        $storage->whatever->insert([]);
 
-        $expectedValue = array(
+        $expectedValue = [
             'whatever' => $storage->whatever,
-        );
+        ];
         $actualValue = $converter->convert($storage);
 
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertStorageRecursively()
+    public function testShouldConvertStorageRecursively(): void
     {
         $converter = new Arr(true);
 
@@ -129,13 +135,13 @@ class ArrTest extends \PHPUnit\Framework\TestCase
         $storage->whatever->insert($record2);
         $storage->whatever->insert($record3);
 
-        $expectedValue = array(
-            'whatever' => array(
-                array('id' => 1),
-                array('id' => 2),
-                array('id' => 3),
-            )
-        );
+        $expectedValue = [
+            'whatever' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ],
+        ];
         $actualValue = $converter->convert($storage);
 
         $this->assertSame($expectedValue, $actualValue);

@@ -1,16 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Converter;
 
 use ArrayIterator;
 use PHPFluent\ArrayStorage\Factory;
 use PHPFluent\ArrayStorage\Storage;
+use PHPUnit\Framework\TestCase;
+use const JSON_NUMERIC_CHECK;
 
 /**
  * @covers PHPFluent\ArrayStorage\Converter\Json
  */
-class JsonTest extends \PHPUnit\Framework\TestCase
+class JsonTest extends TestCase
 {
+    /**
+     * @var Factory
+     */
     protected $factory;
 
     protected function setUp(): void
@@ -18,10 +25,10 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $this->factory = new Factory();
     }
 
-    public function testShouldUseDefinedJsonEncodeFlags()
+    public function testShouldUseDefinedJsonEncodeFlags(): void
     {
         $converter = new Json(JSON_NUMERIC_CHECK);
-        $traversable = new ArrayIterator(array('foo' => '1'));
+        $traversable = new ArrayIterator(['foo' => '1']);
 
         $expectedValue = '{"foo":1}';
         $actualValue = $converter->convert($traversable);
@@ -29,29 +36,14 @@ class JsonTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testShouldUseDefinedArrConverterInstance()
-    {
-        $traversable = new ArrayIterator(array('foo' => '1'));
-
-        $arrayConverter = $this->createMock(__NAMESPACE__ . '\\Arr');
-        $arrayConverter
-            ->expects($this->once())
-            ->method('convert')
-            ->with($traversable)
-            ->will($this->returnValue(array('foo' => '1')));
-        $converter = new Json(JSON_NUMERIC_CHECK, $arrayConverter);
-
-        $converter->convert($traversable);
-    }
-
-    public function testShouldConvertRecord()
+    public function testShouldConvertRecord(): void
     {
         $converter = new Json();
 
         $record = $this->factory->record();
         $record->id = 10;
         $record->name = 'Henrique Moody';
-        $record->child = $this->factory->record(array('id' => 10));
+        $record->child = $this->factory->record(['id' => 10]);
 
         $expectedValue = <<<JSON
 {
@@ -67,7 +59,7 @@ JSON;
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertCollection()
+    public function testShouldConvertCollection(): void
     {
         $converter = new Json();
 
@@ -98,7 +90,7 @@ JSON;
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertStorage()
+    public function testShouldConvertStorage(): void
     {
         $converter = new Json();
 

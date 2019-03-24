@@ -1,21 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
+
+use PHPUnit\Framework\TestCase;
+use function count;
+use function iterator_to_array;
 
 /**
  * @covers PHPFluent\ArrayStorage\Storage
  */
-class StorageTest extends \PHPUnit\Framework\TestCase
+class StorageTest extends TestCase
 {
-    public function testShouldGetCollectionWhenPropertyDoesNoExists()
+    public function testShouldGetCollectionWhenPropertyDoesNoExists(): void
     {
         $storage = new Storage();
         $collection = $storage->whatever;
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Collection', $collection);
+        $this->assertInstanceOf(__NAMESPACE__.'\\Collection', $collection);
     }
 
-    public function testShouldUseFactoryToCreateCollections()
+    public function testShouldUseFactoryToCreateCollections(): void
     {
         $factory = $this
             ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
@@ -29,7 +35,7 @@ class StorageTest extends \PHPUnit\Framework\TestCase
         $storage->whatever;
     }
 
-    public function testShouldCountCollections()
+    public function testShouldCountCollections(): void
     {
         $storage = new Storage();
         $storage->foo;
@@ -38,16 +44,13 @@ class StorageTest extends \PHPUnit\Framework\TestCase
         $this->assertCount(2, $storage);
     }
 
-    public function testShouldIterateOverCollections()
+    public function testShouldIterateOverCollections(): void
     {
         $storage = new Storage();
         $storage->foo;
         $storage->bar;
 
-        $count = 0;
-        foreach ($storage as $key => $collection) {
-            $count++;
-        }
+        $count = count(iterator_to_array($storage));
 
         $this->assertEquals(2, $count);
     }

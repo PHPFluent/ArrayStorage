@@ -1,5 +1,7 @@
 .phpunit.result.cache
+/.phpcs.cache
 /build/
 /composer.lock
 /vendor/
+phpcs.xml
 phpunit.xml

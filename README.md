@@ -37,7 +37,7 @@ You can use a single array:
 
 ```php
 $storage = new Storage();
-$storage->users->insert(array('name' => 'Henrique Moody'));
+$storage->users->insert(['name' => 'Henrique Moody']);
 ```
 
 But you also can use a Record object:
@@ -70,7 +70,7 @@ it gives to the record an unique (incremental integer) `id` property.
 
 ```php
 $storage = new Storage();
-$storage->users->delete(array('name' => 'Henrique Moody'));
+$storage->users->delete(['name' => 'Henrique Moody']);
 ```
 
 ## Removing all records from a collection
@@ -83,13 +83,13 @@ $storage->users->delete();
 ## Finding multiple records into a collection
 
 ```php
-$storage->users->findAll(array('status !=' => false)); // Return an Collection object with the partial result (if any)
+$storage->users->findAll(['status !=' => false]); // Return an Collection object with the partial result (if any)
 ```
 
 ## Finding single record into a collection
 
 ```php
-$storage->users->find(array('priority >=' => 4)); // Return an Record object with the first matched result (if any) or NULL
+$storage->users->find(['priority >=' => 4]); // Return an Record object with the first matched result (if any) or NULL
 ```
 
 ## Using Criteria object
@@ -97,7 +97,7 @@ $storage->users->find(array('priority >=' => 4)); // Return an Record object wit
 ```php
 $criteria = $storage->users->criteria();
 $criteria->foo->equalTo(2)
-         ->bar->in(array(1, 2, 3))
+         ->bar->in([1, 2, 3])
          ->baz->regex('/^[0-9]{3}$/')
          ->qux->like('This _s spart%')
          ->quux->iLike('tHiS _S sPaRt%')

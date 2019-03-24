@@ -1,15 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
 
 use ArrayIterator;
-use IteratorAggregate;
 use Countable;
+use IteratorAggregate;
+use Traversable;
+use function count;
 
 class Collection implements Countable, IteratorAggregate
 {
+    /**
+     * @var Factory
+     */
     protected $factory;
-    protected $records = array();
+
+    /**
+     * @var Record[]
+     */
+    protected $records = [];
+
+    /**
+     * @var int
+     */
     protected $lastRecordId = 0;
 
     public function __construct(Factory $factory)
@@ -17,22 +32,31 @@ class Collection implements Countable, IteratorAggregate
         $this->factory = $factory;
     }
 
-    public function record($record = null)
+    /**
+     * @param Record|mixed[] $record
+     */
+    public function record($record = null): Record
     {
         return $this->factory->record($record);
     }
 
-    public function criteria($criteria = null)
+    /**
+     * @param Criteria|mixed[] $criteria
+     */
+    public function criteria($criteria = null): Criteria
     {
         return $this->factory->criteria($criteria);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->records);
     }
 
-    public function insert($data)
+    /**
+     * @param Record|mixed[] $data
+     */
+    public function insert($data): int
     {
         $record = $this->record($data);
         if (0 >= $record->id) {
@@ -44,7 +68,11 @@ class Collection implements Countable, IteratorAggregate
         return $record->id;
     }
 
-    public function update(array $update, $criteria = null)
+    /**
+     * @param mixed[] $update
+     * @param Criteria|mixed[] $criteria
+     */
+    public function update(array $update, $criteria = null): void
     {
         $records = $this->findAll($criteria);
         foreach ($records as $record) {
@@ -52,11 +80,14 @@ class Collection implements Countable, IteratorAggregate
         }
     }
 
-    public function delete($criteria = null)
+    /**
+     * @param Criteria|mixed[] $criteria
+     */
+    public function delete($criteria = null): void
     {
         $criteria = $this->criteria($criteria);
         foreach ($this->records as $key => $record) {
-            if (! $criteria->isValid($record)) {
+            if (!$criteria->isValid($record)) {
                 continue;
             }
 
@@ -64,22 +95,25 @@ class Collection implements Countable, IteratorAggregate
         }
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->records);
     }
 
-    public function findAll($criteria = null, $limit = null)
+    /**
+     * @param Criteria|mixed[] $criteria
+     */
+    public function findAll($criteria = null, ?int $limit = null): Collection
     {
         $count = 0;
         $criteria = $this->criteria($criteria);
         $collection = $this->factory->collection();
         foreach ($this->records as $record) {
-            if (null !== $limit && $count == $limit) {
+            if ($limit !== null && $count == $limit) {
                 continue;
             }
 
-            if (! $criteria->isValid($record)) {
+            if (!$criteria->isValid($record)) {
                 continue;
             }
 
@@ -90,7 +124,10 @@ class Collection implements Countable, IteratorAggregate
         return $collection;
     }
 
-    public function find($criteria = null)
+    /**
+     * @param Criteria|mixed[] $criteria
+     */
+    public function find($criteria = null): ?Record
     {
         $records = $this->findAll($criteria, 1);
 

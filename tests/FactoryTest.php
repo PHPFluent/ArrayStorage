@@ -1,20 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
+
+use InvalidArgumentException;
+use PHPFluent\ArrayStorage\Filter\Between;
+use PHPFluent\ArrayStorage\Filter\EqualTo;
+use PHPFluent\ArrayStorage\Filter\Filter;
+use PHPFluent\ArrayStorage\Filter\GreaterThan;
+use PHPFluent\ArrayStorage\Filter\ILike;
+use PHPFluent\ArrayStorage\Filter\In;
+use PHPFluent\ArrayStorage\Filter\LessThan;
+use PHPFluent\ArrayStorage\Filter\Like;
+use PHPFluent\ArrayStorage\Filter\Not;
+use PHPFluent\ArrayStorage\Filter\OneOf;
+use PHPFluent\ArrayStorage\Filter\Regex;
+use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * @covers PHPFluent\ArrayStorage\Factory
  */
-class FactoryTest extends \PHPUnit\Framework\TestCase
+class FactoryTest extends TestCase
 {
-    public function testShouldCreateACollection()
+    public function testShouldCreateCollection(): void
     {
         $factory = new Factory();
 
         $this->assertInstanceOf('PHPFluent\\ArrayStorage\\Collection', $factory->collection());
     }
 
-    public function testShouldReturnInputIfInputIsAlreadyACollection()
+    public function testShouldReturnInputIfInputIsAlreadyCollection(): void
     {
         $collection = $this
             ->getMockBuilder('PHPFluent\\ArrayStorage\\Collection')
@@ -26,33 +43,33 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($collection, $factory->collection($collection));
     }
 
-    public function testShouldCreateNewRecord()
+    public function testShouldCreateNewRecord(): void
     {
         $factory = new Factory();
         $record = $factory->record();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+        $this->assertInstanceOf(__NAMESPACE__.'\\Record', $record);
     }
 
-    public function testShouldCreateNewRecordFromArray()
+    public function testShouldCreateNewRecordFromArray(): void
     {
         $factory = new Factory();
-        $data = array();
+        $data = [];
         $record = $factory->record($data);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+        $this->assertInstanceOf(__NAMESPACE__.'\\Record', $record);
     }
 
-    public function testShouldCreateNewRecordFromStdClass()
+    public function testShouldCreateNewRecordFromStdClass(): void
     {
         $factory = new Factory();
-        $data = new \stdClass();
+        $data = new stdClass();
         $record = $factory->record($data);
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Record', $record);
+        $this->assertInstanceOf(__NAMESPACE__.'\\Record', $record);
     }
 
-    public function testShouldReturnTheSameInstanceWhenDataIsAlreadyARecordInstance()
+    public function testShouldReturnTheSameInstanceWhenDataIsAlreadyRecordInstance(): void
     {
         $factory = new Factory();
         $data = new Record();
@@ -61,19 +78,19 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($data, $record);
     }
 
-    public function testShouldCreateACriteria()
+    public function testShouldCreateCriteria(): void
     {
         $factory = new Factory();
         $criteria = $factory->criteria();
 
-        $this->assertInstanceOf(__NAMESPACE__ . '\\Criteria', $criteria);
+        $this->assertInstanceOf(__NAMESPACE__.'\\Criteria', $criteria);
     }
 
-    public function testShouldCreateACriteriaFromAKeyValueArrayOfFilters()
+    public function testShouldCreateCriteriaFromKeyValueArrayOfFilters(): void
     {
-        $inputFilters = array(
-            'foo' => $this->createMock(__NAMESPACE__ . '\\Filter\\Filter'),
-        );
+        $inputFilters = [
+            'foo' => $this->createMock(__NAMESPACE__.'\\Filter\\Filter'),
+        ];
         $factory = new Factory();
         $criteria = $factory->criteria($inputFilters);
         $actualFilters = $criteria->getFilters();
@@ -82,50 +99,56 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($inputFilters['foo'], $actualFilters[0][1]);
     }
 
-    public function testShouldCreateACriteriaFromAKeyValueArrayOfNonFilters()
+    public function testShouldCreateCriteriaFromKeyValueArrayOfNonFilters(): void
     {
-        $inputFilters = array(
+        $inputFilters = [
             'foo' => true,
-        );
+        ];
         $factory = new Factory();
         $criteria = $factory->criteria($inputFilters);
         $actualFilters = $criteria->getFilters();
-        $expectedFilter = new Filter\EqualTo($inputFilters['foo']);
+        $expectedFilter = new EqualTo($inputFilters['foo']);
 
         $this->assertEquals('foo', $actualFilters[0][0]);
         $this->assertEquals($expectedFilter, $actualFilters[0][1]);
     }
 
-    public function operatorsProvider()
+    /**
+     * @return mixed[][]
+     */
+    public function operatorsProvider(): array
     {
-        return array(
-            array('=', 42, new Filter\EqualTo(42)),
-            array('!=', 42, new Filter\Not(new Filter\EqualTo(42))),
-            array('<', 42, new Filter\LessThan(42)),
-            array('<=', 42, new Filter\OneOf(array(new Filter\LessThan(42), new Filter\EqualTo(42)))),
-            array('>', 42, new Filter\GreaterThan(42)),
-            array('>=', 42, new Filter\OneOf(array(new Filter\GreaterThan(42), new Filter\EqualTo(42)))),
-            array('BETWEEN', array(1, 3), new Filter\Between(1, 3)),
-            array('NOT BETWEEN', array(1, 3), new Filter\Not(new Filter\Between(1, 3))),
-            array('ILIKE', 'String%', new Filter\ILike('String%')),
-            array('NOT ILIKE', 'String%', new Filter\Not(new Filter\ILike('String%'))),
-            array('IN', array(1, 2, 3), new Filter\In(array(1, 2, 3))),
-            array('NOT IN', array(1, 2, 3), new Filter\Not(new Filter\In(array(1, 2, 3)))),
-            array('LIKE', 'String%', new Filter\Like('String%')),
-            array('NOT LIKE', 'String%', new Filter\Not(new Filter\Like('String%'))),
-            array('REGEX', '/[a-z]/', new Filter\Regex('/[a-z]/')),
-            array('NOT REGEX', '/[a-z]/', new Filter\Not(new Filter\Regex('/[a-z]/'))),
-        );
+        return [
+            ['=', 42, new EqualTo(42)],
+            ['!=', 42, new Not(new EqualTo(42))],
+            ['<', 42, new LessThan(42)],
+            ['<=', 42, new OneOf([new LessThan(42), new EqualTo(42)])],
+            ['>', 42, new GreaterThan(42)],
+            ['>=', 42, new OneOf([new GreaterThan(42), new EqualTo(42)])],
+            ['BETWEEN', [1, 3], new Between(1, 3)],
+            ['NOT BETWEEN', [1, 3], new Not(new Between(1, 3))],
+            ['ILIKE', 'String%', new ILike('String%')],
+            ['NOT ILIKE', 'String%', new Not(new ILike('String%'))],
+            ['IN', [1, 2, 3], new In([1, 2, 3])],
+            ['NOT IN', [1, 2, 3], new Not(new In([1, 2, 3]))],
+            ['LIKE', 'String%', new Like('String%')],
+            ['NOT LIKE', 'String%', new Not(new Like('String%'))],
+            ['REGEX', '/[a-z]/', new Regex('/[a-z]/')],
+            ['NOT REGEX', '/[a-z]/', new Not(new Regex('/[a-z]/'))],
+        ];
     }
 
     /**
-     * @dataProvider operatorsProvider
+     *@dataProvider operatorsProvider
+     *
+     * @param mixed $value
      */
-    public function testShouldCreateACriteriaFromAKeyValueArrayOfNonFiltersUsingOperator($operator, $value, $expectedFilter)
-    {
-        $inputFilters = array(
-            'name ' . $operator => $value,
-        );
+    public function testShouldCreateCriteriaFromKeyValueArrayOfNonFiltersUsingOperator(
+        string $operator,
+        $value,
+        Filter $expectedFilter
+    ): void {
+        $inputFilters = ['name '.$operator => $value];
         $factory = new Factory();
         $criteria = $factory->criteria($inputFilters);
         $actualFilters = $criteria->getFilters();
@@ -133,55 +156,55 @@ class FactoryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedFilter, $actualFilters[0][1]);
     }
 
-    public function testShouldReturnInputIfInputIsAlreadyAFilter()
+    public function testShouldReturnInputIfInputIsAlreadyFilter(): void
     {
-        $filter = new Filter\EqualTo(42, 'identical');
+        $filter = new EqualTo(42, 'identical');
 
         $factory = new Factory();
 
         $this->assertSame($filter, $factory->filter($filter));
     }
 
-    public function testShouldCreateAFilterByNameAndArguments()
+    public function testShouldCreateFilterByNameAndArguments(): void
     {
-        $expectedFilter = new Filter\EqualTo(42, 'identical');
+        $expectedFilter = new EqualTo(42, 'identical');
 
         $factory = new Factory();
-        $actualFilter = $factory->filter('equalTo', array(42, 'identical'));
+        $actualFilter = $factory->filter('equalTo', [42, 'identical']);
 
         $this->assertEquals($expectedFilter, $actualFilter);
     }
 
-    public function testShouldThrowExceptionWhenCallingMethodDoesNotRefersToAValidFilter()
+    public function testShouldThrowExceptionWhenCallingMethodDoesNotRefersToValidFilter(): void
     {
         $this->expectExceptionObject(
-            new \InvalidArgumentException('"filter" is not a valid filter name')
+            new InvalidArgumentException('"filter" is not a valid filter name')
         );
         $factory = new Factory();
         $factory->filter('filter');
     }
 
-    public function testShouldUseNotFilterWhenInputHasNotAsPrefix()
+    public function testShouldUseNotFilterWhenInputHasNotAsPrefix(): void
     {
-        $expectedFilter = new Filter\Not(new Filter\EqualTo(42));
+        $expectedFilter = new Not(new EqualTo(42));
 
         $factory = new Factory();
-        $actualFilter = $factory->filter('notEqualTo', array(42));
+        $actualFilter = $factory->filter('notEqualTo', [42]);
 
         $this->assertEquals($expectedFilter, $actualFilter);
     }
 
-    public function testShouldUseOneOfFilterWhenInputHasContainsTheWordOr()
+    public function testShouldUseOneOfFilterWhenInputHasContainsTheWordOr(): void
     {
-        $expectedFilter = new Filter\OneOf(
-            array(
-                new Filter\GreaterThan(42),
-                new Filter\EqualTo(42),
-            )
+        $expectedFilter = new OneOf(
+            [
+                new GreaterThan(42),
+                new EqualTo(42),
+            ]
         );
 
         $factory = new Factory();
-        $actualFilter = $factory->filter('greaterThanOrEqualTo', array(42));
+        $actualFilter = $factory->filter('greaterThanOrEqualTo', [42]);
 
         $this->assertEquals($expectedFilter, $actualFilter);
     }

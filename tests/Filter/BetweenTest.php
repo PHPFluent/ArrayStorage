@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
 
 use DateTime;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Between
  */
-class BetweenTest extends \PHPUnit\Framework\TestCase
+class BetweenTest extends TestCase
 {
-    public function testShouldValidateWhenInInterval()
+    public function testShouldValidateWhenInInterval(): void
     {
         $minimum = DateTime::createFromFormat('Y-m-d', '2014-01-01');
         $maximum = DateTime::createFromFormat('Y-m-d', '2014-03-01');
@@ -20,7 +23,7 @@ class BetweenTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($filter->isValid($input));
     }
 
-    public function testShouldValidateWhenOutOfInterval()
+    public function testShouldValidateWhenOutOfInterval(): void
     {
         $filter = new Between(1, 10);
 

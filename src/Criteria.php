@@ -1,47 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage;
 
 use Countable;
 use PHPFluent\ArrayStorage\Filter\Filter;
 use UnexpectedValueException;
+use function count;
 
 class Criteria implements Countable, Filter
 {
+    /**
+     * @var string|null
+     */
     protected $currentIndex = null;
+
+    /**
+     * @var Factory
+     */
     protected $factory;
-    protected $filters = array();
+
+    /**
+     * @var Filter[]
+     */
+    protected $filters = [];
 
     public function __construct(Factory $factory)
     {
         $this->factory = $factory;
     }
 
-    public function getFilters()
+    /**
+     * @return Filter[]
+     */
+    public function getFilters(): array
     {
         return $this->filters;
     }
 
-    public function addFilter($index, Filter $filter)
+    public function addFilter(string $index, Filter $filter): void
     {
-        $this->filters[] = array($index, $filter);
+        $this->filters[] = [$index, $filter];
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->filters);
     }
 
-    public function __get($index)
+    public function __get(string $index): self
     {
         $this->currentIndex = $index;
 
         return $this;
     }
 
-    public function __call($methodName, array $arguments = array())
+    /**
+     * @param mixed[] $arguments
+     */
+    public function __call(string $methodName, array $arguments = []): self
     {
-        if (null === $this->currentIndex) {
+        if ($this->currentIndex === null) {
             throw new UnexpectedValueException('You first need to call a property for this filter');
         }
 
@@ -52,11 +72,14 @@ class Criteria implements Countable, Filter
         return $this;
     }
 
-    public function isValid($record)
+    /**
+     * {@inheritdoc}
+     */
+    public function isValid($record): bool
     {
         $record = ($record instanceof Record ? $record : new Record($record));
         foreach ($this->filters as $value) {
-            list($index, $filter) = $value;
+            [$index, $filter] = $value;
             $value = $record->__get($index);
             if ($filter->isValid($value)) {
                 continue;

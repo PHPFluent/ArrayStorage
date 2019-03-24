@@ -1,21 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Converter;
 
 use Traversable;
 
 class Arr implements Converter
 {
-    protected $recursive;
+    /**
+     * @var bool
+     */
+    private $recursive;
 
-    public function __construct($recursive = true)
+    public function __construct(bool $recursive = true)
     {
         $this->recursive = $recursive;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function convert(Traversable $traversable)
     {
-        $result = array();
+        $result = [];
         foreach ($traversable as $key => $value) {
             if ($this->recursive
                 && $value instanceof Traversable) {

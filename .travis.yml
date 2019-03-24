@@ -19,6 +19,11 @@ before_script:
 script:
   - vendor/bin/phpunit --configuration phpunit.xml.dist --colors
 
-matrix:
+jobs:
   allow_failures:
     - php: nightly
+
+  include:
+    - stage: Coding standards
+      script:
+        - vendor/bin/phpcs

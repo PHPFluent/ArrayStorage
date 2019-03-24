@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Converter;
 
-use DOMDocument;
 use PHPFluent\ArrayStorage\Factory;
 use PHPFluent\ArrayStorage\Storage;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @covers PHPFluent\ArrayStorage\Converter\Xml
  */
-class XmlTest extends \PHPUnit\Framework\TestCase
+class XmlTest extends TestCase
 {
+    /**
+     * @var Factory
+     */
     protected $factory;
 
     protected function setUp(): void
@@ -19,15 +24,15 @@ class XmlTest extends \PHPUnit\Framework\TestCase
         $this->factory = new Factory();
     }
 
-    public function testShouldConvertRecord()
+    public function testShouldConvertRecord(): void
     {
         $converter = new Xml();
 
         $record = $this->factory->record();
         $record->id = 10;
         $record->name = 'Henrique Moody';
-        $record->child = $this->factory->record(array('id' => 10));
-        $record->ids = array(1, 2, 'keyName' => 3);
+        $record->child = $this->factory->record(['id' => 10]);
+        $record->ids = [1, 2, 'keyName' => 3];
         $record->other = new stdClass();
         $record->other->foo = true;
         $record->other->bar = 'Some';
@@ -57,7 +62,7 @@ XML;
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertCollection()
+    public function testShouldConvertCollection(): void
     {
         $converter = new Xml();
 
@@ -90,7 +95,7 @@ XML;
         $this->assertSame($expectedValue, $actualValue);
     }
 
-    public function testShouldConvertStorage()
+    public function testShouldConvertStorage(): void
     {
         $converter = new Xml();
 

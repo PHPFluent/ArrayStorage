@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Filter\Regex
  */
-class RegexTest extends \PHPUnit\Framework\TestCase
+class RegexTest extends TestCase
 {
-    public function testShouldValidateWhenPatternMatch()
+    public function testShouldValidateWhenPatternMatch(): void
     {
         $pattern = '/^[0-9]{5}-[0-9]{3}$/';
         $filter = new Regex($pattern);
@@ -15,7 +19,7 @@ class RegexTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue($filter->isValid('12345-123'));
     }
 
-    public function testShouldValidateWhenPatternDoesNotMatch()
+    public function testShouldValidateWhenPatternDoesNotMatch(): void
     {
         $pattern = '/^[0-9]{5}-[0-9]{3}$/';
         $filter = new Regex($pattern);

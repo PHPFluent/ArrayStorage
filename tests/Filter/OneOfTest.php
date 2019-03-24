@@ -1,41 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
+
+use InvalidArgumentException;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Filter\OneOf
  */
-class OneOfTest extends \PHPUnit\Framework\TestCase
+class OneOfTest extends TestCase
 {
-    protected function filter($return = false)
+    protected function filter(bool $return = false): Filter
     {
-        return $this->createMock('PHPFluent\ArrayStorage\Filter\Filter');
+        return $this->createMock(Filter::class);
     }
 
-    public function testShouldAcceptFiltersOnConstructor()
+    public function testShouldAcceptFiltersOnConstructor(): void
     {
-        $filters = array(
+        $filters = [
             $this->filter(),
             $this->filter(),
-        );
+        ];
         $filter = new OneOf($filters);
 
         $this->assertSame($filters, $filter->getFilters());
     }
 
-    public function testShouldThrowsExceptionWhenFilterIsNotValid()
+    public function testShouldThrowsExceptionWhenFilterIsNotValid(): void
     {
         $this->expectExceptionObject(
-            new \InvalidArgumentException('Filter is not valid')
+            new InvalidArgumentException('Filter is not valid')
         );
-        $filters = array(
+        $filters = [
             $this->filter(),
             'foo',
-        );
-        $filter = new OneOf($filters);
+        ];
+
+        new OneOf($filters);
     }
 
-    public function testShouldReturnFalseIfAllFiltersAreInvalid()
+    public function testShouldReturnFalseIfAllFiltersAreInvalid(): void
     {
         $filter1 = $this->filter();
         $filter1
@@ -49,17 +55,17 @@ class OneOfTest extends \PHPUnit\Framework\TestCase
             ->method('isValid')
             ->will($this->returnValue(false));
 
-        $filters = array(
+        $filters = [
             $filter1,
             $filter2,
-        );
+        ];
 
         $filter = new OneOf($filters);
 
         $this->assertFalse($filter->isValid('Value'));
     }
 
-    public function testShouldReturnTrueIfAtLeastOneFilterIsValid()
+    public function testShouldReturnTrueIfAtLeastOneFilterIsValid(): void
     {
         $filter1 = $this->filter();
         $filter1
@@ -72,10 +78,10 @@ class OneOfTest extends \PHPUnit\Framework\TestCase
             ->expects($this->never())
             ->method('isValid');
 
-        $filters = array(
+        $filters = [
             $filter1,
             $filter2,
-        );
+        ];
 
         $filter = new OneOf($filters);
 

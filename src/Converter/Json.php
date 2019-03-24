@@ -1,25 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Converter;
 
 use Traversable;
+use function json_encode;
+use const JSON_PRETTY_PRINT;
 
 class Json implements Converter
 {
-    protected $arrayConverter;
+    /**
+     * @var int
+     */
     protected $jsonEncodeFlags;
 
-    public function __construct($jsonEncodeFlags = JSON_PRETTY_PRINT, Arr $arrayConverter = null)
+    public function __construct(int $jsonEncodeFlags = JSON_PRETTY_PRINT)
     {
         $this->jsonEncodeFlags = $jsonEncodeFlags;
-        $this->arrayConverter = $arrayConverter ?: new Arr(true);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function convert(Traversable $traversable)
     {
-        $data = $this->arrayConverter->convert($traversable);
-        $result = json_encode($data, $this->jsonEncodeFlags);
-
-        return $result;
+        return json_encode((new Arr(true))->convert($traversable), $this->jsonEncodeFlags);
     }
 }

@@ -1,23 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PHPFluent\ArrayStorage\Filter;
+
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers PHPFluent\ArrayStorage\Filter\In
  */
-class InTest extends \PHPUnit\Framework\TestCase
+class InTest extends TestCase
 {
-    public function testShouldValidateValueIsInTheList()
+    public function testShouldValidateValueIsInTheList(): void
     {
-        $haystack = array(1, 2, 3, 4, 5);
+        $haystack = [1, 2, 3, 4, 5];
         $filter = new In($haystack);
 
         $this->assertTrue($filter->isValid(3));
     }
 
-    public function testShouldValidateValueIsOutOfTheList()
+    public function testShouldValidateValueIsOutOfTheList(): void
     {
-        $haystack = array(1, 2, 3, 4, 5);
+        $haystack = [1, 2, 3, 4, 5];
         $filter = new In($haystack);
 
         $this->assertFalse($filter->isValid(6));
