@@ -52,9 +52,9 @@ class EqualToTest extends \PHPUnit_Framework_TestCase
 
     public function testShouldValidateUsingObjectCastingPrecision()
     {
-        $expected = new \DateTime('now');
+        $expected = new \DateTime('2019-09-09');
 
-        $actual = 'now';
+        $actual = '2019-09-09';
 
         $filter = new EqualTo($expected, 'DateTime');
 
