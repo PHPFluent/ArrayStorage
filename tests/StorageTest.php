@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PHPFluent\ArrayStorage;
 
 use PHPUnit\Framework\TestCase;
-use function count;
 use function iterator_to_array;
 
 /**
@@ -18,13 +17,13 @@ class StorageTest extends TestCase
         $storage = new Storage();
         $collection = $storage->whatever;
 
-        $this->assertInstanceOf(__NAMESPACE__.'\\Collection', $collection);
+        $this->assertInstanceOf(Collection::class, $collection);
     }
 
     public function testShouldUseFactoryToCreateCollections(): void
     {
         $factory = $this
-            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->getMockBuilder(Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
         $factory
@@ -50,8 +49,6 @@ class StorageTest extends TestCase
         $storage->foo;
         $storage->bar;
 
-        $count = count(iterator_to_array($storage));
-
-        $this->assertEquals(2, $count);
+        $this->assertCount(2, iterator_to_array($storage));
     }
 }

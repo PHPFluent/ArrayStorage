@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace PHPFluent\ArrayStorage;
 
 use PHPUnit\Framework\TestCase;
-use function count;
 use function iterator_to_array;
 
 /**
@@ -61,8 +60,6 @@ class RecordTest extends TestCase
         $record->id = 1;
         $record->name = 'Henrique Moody';
 
-        $count = count(iterator_to_array($record));
-
-        $this->assertEquals(2, $count);
+        $this->assertCount(2, iterator_to_array($record));
     }
 }

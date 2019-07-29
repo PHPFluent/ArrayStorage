@@ -28,13 +28,13 @@ class FactoryTest extends TestCase
     {
         $factory = new Factory();
 
-        $this->assertInstanceOf('PHPFluent\\ArrayStorage\\Collection', $factory->collection());
+        $this->assertInstanceOf(Collection::class, $factory->collection());
     }
 
     public function testShouldReturnInputIfInputIsAlreadyCollection(): void
     {
         $collection = $this
-            ->getMockBuilder('PHPFluent\\ArrayStorage\\Collection')
+            ->getMockBuilder(Collection::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -48,7 +48,7 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $record = $factory->record();
 
-        $this->assertInstanceOf(__NAMESPACE__.'\\Record', $record);
+        $this->assertInstanceOf(Record::class, $record);
     }
 
     public function testShouldCreateNewRecordFromArray(): void
@@ -57,7 +57,7 @@ class FactoryTest extends TestCase
         $data = [];
         $record = $factory->record($data);
 
-        $this->assertInstanceOf(__NAMESPACE__.'\\Record', $record);
+        $this->assertInstanceOf(Record::class, $record);
     }
 
     public function testShouldCreateNewRecordFromStdClass(): void
@@ -66,7 +66,7 @@ class FactoryTest extends TestCase
         $data = new stdClass();
         $record = $factory->record($data);
 
-        $this->assertInstanceOf(__NAMESPACE__.'\\Record', $record);
+        $this->assertInstanceOf(Record::class, $record);
     }
 
     public function testShouldReturnTheSameInstanceWhenDataIsAlreadyRecordInstance(): void
@@ -83,13 +83,13 @@ class FactoryTest extends TestCase
         $factory = new Factory();
         $criteria = $factory->criteria();
 
-        $this->assertInstanceOf(__NAMESPACE__.'\\Criteria', $criteria);
+        $this->assertInstanceOf(Criteria::class, $criteria);
     }
 
     public function testShouldCreateCriteriaFromKeyValueArrayOfFilters(): void
     {
         $inputFilters = [
-            'foo' => $this->createMock(__NAMESPACE__.'\\Filter\\Filter'),
+            'foo' => $this->createMock(Filter::class),
         ];
         $factory = new Factory();
         $criteria = $factory->criteria($inputFilters);
