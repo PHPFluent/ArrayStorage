@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PHPFluent\ArrayStorage;
 
+use PHPFluent\ArrayStorage\Filter\Filter;
 use PHPUnit\Framework\TestCase;
-use function count;
 use function iterator_to_array;
 
 /**
@@ -19,7 +19,7 @@ class CollectionTest extends TestCase
         $record = new Record($data);
 
         $factory = $this
-            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->getMockBuilder(Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -37,11 +37,11 @@ class CollectionTest extends TestCase
     public function testShouldUseFactoryToCreateCriteria(): void
     {
         $factory = $this
-            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->getMockBuilder(Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $filters = ['foo' => $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter')];
+        $filters = ['foo' => $this->createMock(Filter::class)];
 
         $criteria = new Criteria($factory);
         $criteria->addFilter('foo', $filters['foo']);
@@ -90,15 +90,15 @@ class CollectionTest extends TestCase
         $collection->insert(new Record());
         $collection->insert(new Record());
         $collection->insert(new Record());
-        $count = count(iterator_to_array($collection));
+        $count = iterator_to_array($collection);
 
-        $this->assertEquals(3, $count);
+        $this->assertCount(3, $count);
     }
 
     public function testShouldReturnAnInstanceOfCollectionWhenFindingRecords(): void
     {
         $factory = $this
-            ->getMockBuilder('PHPFluent\\ArrayStorage\\Factory')
+            ->getMockBuilder(Factory::class)
             ->disableOriginalConstructor()
             ->getMock();
 

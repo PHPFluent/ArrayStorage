@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PHPFluent\ArrayStorage;
 
+use PHPFluent\ArrayStorage\Filter\EqualTo;
 use PHPFluent\ArrayStorage\Filter\Filter;
 use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
@@ -41,14 +42,14 @@ class CriteriaTest extends TestCase
         [$index, $filter] = $filters[0];
 
         $this->assertEquals('foo', $index);
-        $this->assertInstanceOf('PHPFluent\\ArrayStorage\\Filter\\EqualTo', $filter);
+        $this->assertInstanceOf(EqualTo::class, $filter);
     }
 
     public function testShouldUseFactoryToCreateFilters(): void
     {
-        $filter = $this->createMock('PHPFluent\\ArrayStorage\\Filter\\Filter');
+        $filter = $this->createMock(Filter::class);
 
-        $factory = $this->createMock('PHPFluent\\ArrayStorage\\Factory');
+        $factory = $this->createMock(Factory::class);
         $factory
             ->expects($this->once())
             ->method('filter')
